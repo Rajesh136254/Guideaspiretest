@@ -1,0 +1,5 @@
+-> Need to integrate the chatbot and we should provide the guidance if any doubts is there with telegram
+-> We need to do it in two languages
+-> We need to include the business developing and movie things to get good knowledge. 
+
+

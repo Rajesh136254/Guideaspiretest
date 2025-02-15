@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In - GuideAspire</title>
+    <link rel="stylesheet" href="GuideAspire.css">
+</head>
+<body class="main-container1">
+    
+            <div class="auth-container">
+                <h2>Login</h2>
+                <form id="loginForm" action="/login" method="POST">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit" class="btn primary-btn">Login</button>
+                </form>
+                <br>
+                <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+            </div>
+            <script src="GuideAspire.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,78 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif; /* Or your preferred font */
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header styles */
+header {
+    background-color: #f0f0f0; /* Example background color */
+    padding: 20px 0;
+}
+
+header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+header nav ul li {
+    margin-left: 20px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+/* Hero section styles */
+.hero {
+    background-color: #fff; /* Example background color */
+    padding: 100px 0; 
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero h2 {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+/* About section styles */
+.about {
+    background-color: #f0f0f0; /* Example background color */
+    padding: 50px 0;
+}
+
+.about h2 {
+    margin-bottom: 20px;
+}
+
+.learn-more-button {
+    display: inline-block;
+    background-color: #007bff; /* Example button color */
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+/* Footer styles */
+footer {
+    background-color: #333; /* Example footer color */
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}

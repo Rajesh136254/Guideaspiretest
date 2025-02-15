@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuideAspire</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: #f4f4f4;
+    overflow: hidden; /* Prevents entire page scrolling */
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Ensures the layout stays within the viewport */
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 200px; /* Increased width */
+    background: linear-gradient(to bottom, #6a11cb, #2575fc);
+    padding: 20px;
+    height: 100vh; /* Fixed full height */
+    color: white;
+    box-shadow: 2px 0px 10px rgba(0,0,0,0.2);
+    position: fixed; /* Keeps sidebar fixed */
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar li {
+    padding: 15px;
+    margin: 10px 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.3s;
+}
+.sidebar li:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 250px; /* Adjusted to match the increased sidebar width */
+    overflow-y: auto;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+#language-select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* Days Scroll */
+.days-container {
+    max-width: 100%;
+    overflow-x: auto; /* Enables scrolling */
+    white-space: nowrap;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+}
+#days-scroll {
+    display: flex;
+    overflow-x: auto; /* Enables horizontal scrolling */
+    overflow-y: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+}
+
+.day-item {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.day-item:hover {
+    background-color: #0056b3;
+}
+
+.locked {
+    background-color: #ccc !important;
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.completed {
+    background-color: #28a745 !important;
+}
+
+.unlocked {
+    background-color: #ffc107 !important;
+}
+
+
+
+/* Video Section */
+#topic-name {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+iframe {
+    width: 100%;
+    height: 550px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    margin-top: 10px; /* Creates space between the scrolling days and the video frame */
+}
+
+/* Links & Button */
+.links-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.links-section a, .links-section button {
+    padding: 10px 15px;
+    background: #2575fc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+.links-section button:hover, .links-section a:hover {
+    background: #6a11cb;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Navigation -->
+        <nav class="sidebar">
+            <ul>
+                <li class="class-item" data-class="1">Class 1</li>
+                <li class="class-item" data-class="2">Class 2</li>
+                <li class="class-item" data-class="3">Class 3</li>
+                <li class="class-item" data-class="4">Class 4</li>
+                <li class="class-item" data-class="5">Class 5</li>
+            </ul>
+        </nav>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Section: Language Selection -->
+            <div class="top-bar">
+                <select id="language-select">
+                    <option value="english">English</option>
+                    <option value="telugu">Telugu</option>
+                </select>
+            </div>
+            
+            <!-- Days Navigation -->
+            <div class="days-container">
+                <div class="days-scroll" id="days-scroll">
+                    <!-- Days will be generated dynamically -->
+                </div>
+            </div>
+            
+            <!-- Video Section -->
+            <h2 id="topic-name">Topic Name</h2>
+            <iframe id="video-frame" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+            
+            <!-- Exercise and Project Links -->
+            <div class="links-section">
+                <a id="exercise-link" href="#" target="_blank">Go to Exercise</a>
+                <a id="project-link" href="#" target="_blank">Go to Project</a>
+                <button id="complete-btn">Mark Day as Complete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+document.addEventListener("DOMContentLoaded", function () {
+    const daysContainer = document.getElementById("days-scroll");
+    const videoFrame = document.getElementById("video-frame");
+    const topicName = document.getElementById("topic-name");
+    const exerciseLink = document.getElementById("exercise-link");
+    const projectLink = document.getElementById("project-link");
+    const completeBtn = document.getElementById("complete-btn");
+    const languageSelect = document.getElementById("language-select");
+    const classItems = document.querySelectorAll(".class-item");
+    const userEmail = localStorage.getItem("userEmail"); // Ensure this is set during login
+
+    if (!userEmail) {
+        alert("Please log in to track your progress.");
+        window.location.href = "/login";
+        return;
+    }
+
+    let selectedClass = 1;
+    let selectedDay = 1;
+    let progress = {};
+
+    const topics = {
+        1: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
+        2: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
+        3: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
+        4: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
+        5: ["Advanced Algebra", "Trigonometry", "Probability", "Statistics", "Logical Reasoning"]
+    };
+
+    const exerciseLinks = {
+        1: ["https://exercise1.com", "https://exercise2.com"],
+        2: ["https://exercise3.com", "https://exercise4.com"]
+    };
+
+    const projectLinks = {
+        1: ["https://project1.com", "https://project2.com"],
+        2: ["https://project3.com", "https://project4.com"]
+    };
+
+    // Fetch progress from the database
+    async function fetchProgress() {
+        try {
+            const response = await fetch(`/progress/${userEmail}/${selectedClass}`);
+            const completedDays = await response.json();
+            progress[selectedClass] = completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
+            updateDays();
+        } catch (error) {
+            console.error("Error fetching progress:", error);
+        }
+    }
+
+    function updateDays() {
+        daysContainer.innerHTML = "";
+        let currentProgress = progress[selectedClass] || 1; // Ensure day 1 is always unlocked
+
+        for (let i = 1; i <= 50; i++) {
+            const day = document.createElement("div");
+            day.classList.add("day-item");
+            day.textContent = `Day ${i}`;
+
+            if (i < currentProgress) {
+                day.classList.add("completed");
+                day.innerHTML += " ⭐";
+            } else if (i === currentProgress) {
+                day.classList.add("unlocked");
+            } else {
+                day.classList.add("locked");
+            }
+
+            day.addEventListener("click", () => {
+                if (!day.classList.contains("locked")) {
+                    loadDay(i);
+                }
+            });
+
+            daysContainer.appendChild(day);
+        }
+    }
+
+    function loadDay(day) {
+        selectedDay = day;
+        topicName.textContent = `Class ${selectedClass} - ${topics[selectedClass][(day - 1) % topics[selectedClass].length]}`;
+        videoFrame.src = getVideoURL(selectedClass, day);
+        exerciseLink.href = exerciseLinks[selectedClass] ? exerciseLinks[selectedClass][(day - 1) % exerciseLinks[selectedClass].length] : "#";
+        projectLink.href = projectLinks[selectedClass] ? projectLinks[selectedClass][(day - 1) % projectLinks[selectedClass].length] : "#";
+    }
+
+    function getVideoURL(classNum, dayNum) {
+        const lang = languageSelect.value;
+        const baseURL = "https://www.youtube.com/embed/";
+        const videoIDs = {
+            english: ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
+            telugu: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"]
+        };
+        return `${baseURL}${videoIDs[lang][(classNum + dayNum) % videoIDs[lang].length]}`;
+    }
+
+    completeBtn.addEventListener("click", async function () {
+        if (!progress[selectedClass] || progress[selectedClass] < selectedDay + 1) {
+            progress[selectedClass] = selectedDay + 1;
+            try {
+                await fetch('/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail, classNumber: selectedClass, dayNumber: selectedDay })
+                });
+                updateDays();
+            } catch (error) {
+                console.error("Error saving progress:", error);
+            }
+        }
+    });
+
+    classItems.forEach(item => {
+        item.addEventListener("click", function () {
+            selectedClass = parseInt(this.getAttribute("data-class"));
+            selectedDay = 1;
+            fetchProgress();
+            loadDay(1);
+        });
+    });
+
+    languageSelect.addEventListener("change", function () {
+        loadDay(selectedDay);
+    });
+
+    fetchProgress();
+    loadDay(1);
+});
+
+    </script>
+</body>
+</html>

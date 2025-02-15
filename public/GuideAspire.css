@@ -1,0 +1,596 @@
+/* Reset and Basic Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f3f4f6;
+    color: #333;
+}
+
+/* Hero Section Styling */
+
+
+
+
+.title {
+    font-size: 4rem;
+    margin-bottom: 0.5em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.5em;
+    margin-top:500px;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+
+
+.secondary-btn {
+    background-color: #1c92d2;
+    color: #fff;
+}
+.primary-btn {
+    background-color: #FF6B6B;
+    color: #fff;
+}
+
+  /* button */
+  .btn {
+    margin-top: 0px;
+    margin-right:20px;
+    padding: 15px 40px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    color: #FFF;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 12px;
+  }
+  .btn::after {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+  }
+  /* glow */
+  .btn::before {
+    content: "";
+    background: linear-gradient(
+      45deg,
+      #FF0000, #FF7300, #FFFB00, #48FF00,
+      #00FFD5, #002BFF, #FF00C8, #FF0000
+    );
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background-size: 600%;
+    z-index: -1;
+    width: calc(100% + 4px);
+    height:  calc(100% + 4px);
+    filter: blur(8px);
+    animation: glowing 20s linear infinite;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+    opacity: 0;
+  }
+  
+  @keyframes glowing {
+    0% {background-position: 0 0;}
+    50% {background-position: 400% 0;}
+    100% {background-position: 0 0;}
+  }
+  
+  /* hover */
+  .btn:hover::before {
+    opacity: 1;
+  }
+  
+  .btn:active:after {
+    background: transparent;
+  }
+  
+  .btn:active {
+    color: #bc5656;
+    font-weight: bold;
+  }
+
+
+
+
+/* Mission Section Styling */
+.mission {
+    background-color: #f9f9f9;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.mission h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.mission p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+
+
+/* Authentication Container Styling */
+.auth-container {
+    width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    text-align: center;
+    
+}
+.main-container1{
+    background-color:#33bdb8;
+}
+.mains-container{
+    background-color:#061954
+}
+
+.auth-container h2 {
+    margin-bottom: 20px;
+}
+
+.auth-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-container label {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.auth-container input {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.auth-container .btn {
+    margin-top: 20px;
+}
+
+.course-container {
+    padding: 30px;
+    text-align: center;
+}
+
+
+
+/* Navigation Bar */
+.navbar {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 15px; /* Space between the links */
+
+}
+
+.navbar li {
+    margin: 0;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #ffffff; /* Change color as needed */
+    font-weight: bold; /* Make text bold */
+    padding: 8px 12px; /* Padding around the links */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.navbar a:hover {
+    background-color: rgba(255, 255, 255, 0.3); /* Hover effect */
+}
+
+.loginsign{
+    margin-top:20px;
+}
+/* Background Image for Hero Section */
+.hero-section {
+    background-image: url('Homepage.png'); /* Example background image */
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    height: 900px; /* Full viewport height */
+    width: 95vw;
+    color: #fff; /* Text color for readability */
+    display: flex;
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+    text-align: center; /* Center text */
+    padding: 20px; /* Padding around the content */
+}
+
+/* Additional Inspiring Section */
+.inspiration {
+    background-color: #a08fb0; /* Light background color */
+    padding: 40px;
+    text-align: center; /* Center text */
+    margin-bottom:20px;
+    border-radius:10px
+}
+
+.inspiration h2 {
+    color: #333; /* Darker color for headers */
+}
+
+.inspiration p {
+    color: #666; /* Medium gray for text */
+    max-width: 800px; /* Limit width for readability */
+    margin: 20px auto; /* Center the text with margin */
+}
+
+.testimonials {
+    margin-top: 20px; /* Space above testimonials */
+    font-style: italic; /* Italicize text */
+    color: #555; /* Dark gray for testimonials */
+    border-left: 3px solid #007bff; /* Left border to highlight */
+    padding-left: 15px; /* Space between border and text */
+}
+
+
+/* Course select cards styling */
+
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f2f4f8;
+    margin: 0;
+    padding: 0;
+}
+
+.class-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Class Container Styling */
+.class-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 1rem;
+}
+
+
+/* course select card styling */
+
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f2f4f8;
+    margin: 0;
+    padding: 0;
+}
+
+.class-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Class Container Styling */
+.class-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 1rem;
+}
+
+/* Card Styling */
+.class-card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    width: 250px;
+    text-align: center;
+    padding: 2rem;
+}
+
+.class-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+/* Styling for Individual Class Page */
+
+header h2 {
+    text-align: center;
+    color: #4A90E2;
+    font-size: 2rem;
+    margin-top: 20px;
+}
+
+header p {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.content-section {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 900px;
+    background-color: #f0f9ff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.content-section h3 {
+    color: #4A90E2;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.content-section p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.content-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.content-section ul li {
+    padding: 5px 0;
+}
+
+.content-section ul li a {
+    text-decoration: none;
+    color: #4A90E2;
+    font-weight: bold;
+}
+
+.btn.start-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4A90E2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn.start-btn:hover {
+    background-color: #357ABD;
+}
+
+
+/* class level modification */
+
+/* Reset and layout styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Full height to accommodate sidebar */
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 20%;
+    background-color: #1e2a38;
+    color: #fff;
+    padding: 20px;
+    position: fixed; /* Fixed position for the sidebar */
+    height: 100vh; /* Full height */
+    overflow-y: auto; /* Allow scrolling if necessary */
+}
+
+.sidebar h3 {
+    font-size: 1.5em;
+    color: #ecf0f1;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Class and day links */
+.class-list {
+    list-style: none;
+}
+
+.class-item {
+    margin-bottom: 15px;
+}
+
+.class-link{
+    display: block;
+    padding: 10px;
+    color: #90caf9;
+    text-decoration: none;
+    font-size: 1em;
+    background-color: #7b8eec;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    transition: background-color 0.3s;
+}
+
+.day-link {
+    display: block;
+    padding: 7px;
+    color: #90caf9;
+    text-decoration: none;
+    font-size: 1em;
+    background-color: #2b3b8b;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    transition: background-color 0.3s;
+}
+
+ .day-link:hover {
+    background-color: #1abc9c;
+    color: #fff;
+}
+
+.day-list {
+    list-style: none;
+    padding-left: 15px;
+    margin-top: 8px;
+}
+
+/* Content area styling */
+.content-area {
+    margin-left: 22%; /* Adjusted to fit sidebar */
+    padding: 20px;
+    width: 75%; /* Adjusted width */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100vh; /* Ensure the content area takes full height */
+    overflow-y: auto; /* Allow scrolling if necessary */
+}
+
+/* Individual content sections with enlarged size */
+.content-section {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    width: 2000px;
+}
+
+.content-section h2 {
+    font-size: 1.8em;
+    color: #007bb5;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #1abc9c;
+    padding-bottom: 10px;
+}
+
+.content-block {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+.content-block h3 {
+    font-size: 1.2em;
+    color: #34495e;
+    margin-bottom: 5px;
+}
+
+.content-block a {
+    color: #007bb5;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.content-block a:hover {
+    text-decoration: underline;
+}
+
+/* Add the 'hidden' class styling to ensure hidden elements do not take up space */
+.hidden {
+    display: none;
+}
+
+
+/* quiz stylig*/
+
+
+.hidden {
+    display: none;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+}
