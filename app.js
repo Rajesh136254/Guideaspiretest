@@ -69,7 +69,10 @@ app.post("/signup", (req, res) => {
           console.error("Error inserting user into database:", err);
           return res.status(500).send('<script>alert("An error occurred while inserting user."); window.location.href="/signup";</script>');
         }
+        else{
+        alert("you have successfully signed up, please Login");
         res.redirect("/login");
+        }
       });
     });
   });
@@ -204,4 +207,38 @@ app.post('/progress', async (req, res) => {
 const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+
+
+// Forgot Password Route
+app.post("/forgot-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  // Check if the user exists in the database
+  const checkUserQuery = "SELECT * FROM users WHERE email = ?";
+  db.query(checkUserQuery, [email], async (err, results) => {
+      if (err) {
+          console.error("Error checking user:", err);
+          return res.status(500).json({ error: "Failed to check user existence" });
+      }
+
+      if (results.length === 0) {
+          return res.status(400).json({ error: "User does not exist. Please sign up first." });
+      }
+
+      // Hash the new password
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update the user's password in the database
+      const updatePasswordQuery = "UPDATE users SET password = ? WHERE email = ?";
+      db.query(updatePasswordQuery, [hashedPassword, email], (err) => {
+          if (err) {
+              console.error("Error updating password:", err);
+              return res.status(500).json({ error: "Failed to update password" });
+          }
+
+          res.json({ success: true });
+      });
+  });
 });

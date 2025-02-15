@@ -4,7 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In - GuideAspire</title>
-    <link rel="stylesheet" href="GuideAspire.css">
+    <link rel="stylesheet" href="">
+
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 10%);
+            background-size: 20px 20px;
+            animation: moveBackground 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes moveBackground {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .auth-container h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            text-align: left;
+        }
+
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .primary-btn {
+            background: #00f2fe;
+            color: #000;
+        }
+
+        .primary-btn:hover {
+            background: #4facfe;
+            transform: translateY(-3px);
+        }
+
+        /* Login/Signup Link */
+        .signupsign {
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .signupsign a {
+            color: #00f2fe;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .signupsign a:hover {
+            color: #4facfe;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 20px;
+                width: 90%;
+            }
+
+            .auth-container h2 {
+                font-size: 24px;
+            }
+
+            input {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .signupsign {
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
 <body class="main-container1">
     
@@ -12,13 +179,13 @@
                 <h2>Login</h2>
                 <form id="loginForm" action="/login" method="POST">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
                     <button type="submit" class="btn primary-btn">Login</button>
                 </form>
                 <br>
-                <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                <p class="signupsign">Don't have an account? <a href="/signup">Sign Up</a></p>
             </div>
             <script src="GuideAspire.js"></script>
     

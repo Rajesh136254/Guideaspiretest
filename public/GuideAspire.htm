@@ -1,42 +1,400 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuideAspire - Unlock Your Potential</title>
-    <link rel="stylesheet" href="/GuideAspire.css">
-    <link rel="icon" type="image/png" sizes="32x32" href="/Homepage1.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GuideAspire - Your Path to Skill Development and Career Success</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3845/3845731.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    /* Navigation Bar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(0, 0, 0, 0.5);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav .logo img {
+      width: 30px;
+      height: 30px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      margin: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: #00f2fe;
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #00f2fe;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 20px;
+      background: url('https://source.unsplash.com/1600x900/?education,technology') no-repeat center/cover;
+      position: relative;
+      
+    }
+    .hero h2{
+        font-size:40px;
+        color:#f023df;
+        font-family: 'Brush Script MT', cursive;
+        background:transparent;
+    }
+    .guide{
+        font-size:45px;
+        color:#d5c59a;
+        font-family:sans-serif;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 95%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+
+
+
+.secondary-btn {
+    background-color: #1c92d2;
+    color: #fff;
+}
+.primary-btn {
+    background-color: #FF6B6B;
+    color: #fff;
+}
+
+  /* button */
+  .btn {
+    margin-top: 0px;
+    margin-right:20px;
+    padding: 15px 40px;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    color: #FFF;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 12px;
+  }
+  .btn::after {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+  }
+  /* glow */
+  .btn::before {
+    content: "";
+    background: linear-gradient(
+      45deg,
+      #FF0000, #FF7300, #FFFB00, #48FF00,
+      #00FFD5, #002BFF, #FF00C8, #FF0000
+    );
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    background-size: 600%;
+    z-index: -1;
+    width: calc(100% + 4px);
+    height:  calc(100% + 4px);
+    filter: blur(8px);
+    animation: glowing 20s linear infinite;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+    opacity: 0;
+  }
+  
+  @keyframes glowing {
+    0% {background-position: 0 0;}
+    50% {background-position: 400% 0;}
+    100% {background-position: 0 0;}
+  }
+  
+  /* hover */
+  .btn:hover::before {
+    opacity: 1;
+  }
+  
+  .btn:active:after {
+    background: transparent;
+  }
+  
+  .btn:active {
+    color: #bc5656;
+    font-weight: bold;
+  }
+    /* Cards Section */
+    .cards, .features, .testimonials, .faq {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 50px 20px;
+      gap: 30px;
+    }
+
+    .card, .feature, .testimonial, .faq-item {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 12px;
+      width: 300px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover, .feature:hover, .testimonial:hover, .faq-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .card h2, .feature h2, .faq-item h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .card p, .feature p, .testimonial p, .faq-item p {
+      font-size: 16px;
+      color: #f0f0f0;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      margin-top: 50px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      nav {
+        padding: 15px 20px;
+      }
+
+      nav .logo {
+        font-size: 20px;
+      }
+
+      nav ul {
+        gap: 15px;
+      }
+
+      .hero h1 {
+        font-size: 36px;
+        margin-botom:10px;
+      }
+
+      .hero p {
+        font-size: 18px;
+        
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-size: 16px;
+      }
+
+      .cards, .features, .testimonials, .faq {
+        padding: 30px 10px;
+        gap: 20px;
+      }
+
+      .card, .feature, .testimonial, .faq-item {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      nav ul {
+        display: none; /* Hide nav links on small devices */
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      
+    }
+  </style>
 </head>
-<body class="mains-container">
-    <nav class="navbar">
-        <ul>
-            <li><a href="#about">About Us</a></li>
-            <li><a href="#courses">Courses</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo">
+      
+      GuideAspire
+    </div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#courses">Courses</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
 
-    <header class="hero-section">
-        <div class="hero-content">
-            <p class="subtitle">Your Path to Skill Development and Career Success</p>
-            <div class="button-container">
-                <a href="/signup" class="btn primary-btn">Sign Up</a>
-                <a href="/login" class="btn secondary-btn">Log In</a>
-            </div>
-        </div>
-    </header>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>WELCOME to <span class="guide">GuideAspire</span></h2>
+    <h1><marquee>Your Path to Skill Development and Career Success</marquee></h1>
+    <p>Empowering students with essential skills for a bright future.</p>
+    <div class="button-container">
+    <a href="/signup" class="btn primary-btn">Sign Up</a>
+    <a href="/login" class="btn secondary-btn">Log In</a>
+    </div>
+  </section>
 
-    <section class="mission">
-        <h2>Our Mission</h2>
-        <p>GuideAspire provides resources to help students develop analytical, logical, and entrepreneurial skills for a better future.</p>
-    </section>
+  <!-- Cards Section -->
+  <section class="cards">
+    <div class="card">
+      <h2>Logical Thinking</h2>
+      <p>Develop logical skills through curated content.</p>
+    </div>
+    <div class="card">
+      <h2>Analytical Skills</h2>
+      <p>Enhance analytical abilities daily.</p>
+    </div>
+    <div class="card">
+      <h2>Entrepreneurship</h2>
+      <p>Build business acumen with our courses.</p>
+    </div>
+    <div class="card">
+      <h2>Career Readiness</h2>
+      <p>Prepare for your future job market.</p>
+    </div>
+  </section>
 
-    <section class="inspiration">
-        <h2>Unlock Your Potential</h2>
-        <p>Join us in a journey of lifelong learning. With our curated resources, you can enhance your skills and open doors to your dream career!</p>
-        <div class="testimonials">
-            <blockquote>"GuideAspire helped me find my passion and develop the skills I needed for success!" - A Happy Student</blockquote>
-        </div>
-    </section>
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature">
+      <h2>Live Sessions</h2>
+      <p>Interactive sessions with experts.</p>
+    </div>
+    <div class="feature">
+      <h2>Projects</h2>
+      <p>Hands-on experience with real-world tasks.</p>
+    </div>
+    <div class="feature">
+      <h2>Skill Assessments</h2>
+      <p>Evaluate and improve your abilities.</p>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials">
+    <div class="testimonial">
+      <p>"GuideAspire transformed my learning journey!" - A Student</p>
+    </div>
+    <div class="testimonial">
+      <p>"A perfect platform for skill growth." - Parent</p>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <div class="faq-item">
+      <h2>What is GuideAspire?</h2>
+      <p>An educational platform focused on skill development.</p>
+    </div>
+    <div class="faq-item">
+      <h2>Who can join?</h2>
+      <p>Students from grade 1 to graduation level.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 GuideAspire | Empowering Students for a Better Tomorrow</p>
+  </footer>
 </body>
 </html>

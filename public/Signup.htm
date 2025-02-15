@@ -4,23 +4,271 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - GuideAspire</title>
-    <link rel="stylesheet" href="GuideAspire.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="icon" type="image/png" sizes="32x32" href="Homepage.png">
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background Animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 10%);
+            background-size: 20px 20px;
+            animation: moveBackground 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes moveBackground {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .auth-container h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            text-align: left;
+        }
+
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .primary-btn {
+            background: #00f2fe;
+            color: #000;
+        }
+
+        .primary-btn:hover {
+            background: #4facfe;
+            transform: translateY(-3px);
+        }
+
+        /* Login/Signup Link */
+        .loginsign {
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .loginsign a {
+            color: #00f2fe;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .loginsign a:hover {
+            color: #4facfe;
+        }
+
+        /* Forgot Password Link */
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .forgot-password a {
+            color: #00f2fe;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #4facfe;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 20px;
+                width: 90%;
+            }
+
+            .auth-container h2 {
+                font-size: 24px;
+            }
+
+            input {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .loginsign, .forgot-password {
+                font-size: 12px;
+            }
+        }
+    </style>
 </head>
-<body class="main-container1">
-    
-            <div class="auth-container">
-                <h2>Sign Up</h2>
-                <form id="signupForm" action="/signup" method="POST">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                    <button type="submit" class="btn primary-btn">Sign Up</button>
-                </form>
-                <p class="loginsign">Already have an account? <a href="/login">Log In</a></p>
-            </div>
-            <script src="GuideAspire.js"></script>
-   
+<body>
+    <!-- Auth Container -->
+    <div class="auth-container" id="authContainer">
+        <h2 id="formTitle">Sign Up</h2>
+        <form id="signupForm" action="/signup" method="POST">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <button type="submit" class="btn primary-btn">Sign Up</button>
+        </form>
+        <p class="loginsign">Already have an account? <a href="/login">Log In</a></p>
+        <p class="forgot-password"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
+    </div>
+
+    <!-- Forgot Password Form (Hidden by Default) -->
+    <div class="auth-container" id="forgotPasswordContainer" style="display: none;">
+        <h2>Forgot Password</h2>
+        <form id="forgotPasswordForm" action="/forgot-password" method="POST">
+            <label for="forgotEmail">Email</label>
+            <input type="email" id="forgotEmail" name="email" placeholder="Enter your email" required>
+            <label for="newPassword">New Password</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required>
+            <button type="submit" class="btn primary-btn">Reset Password</button>
+        </form>
+        <p class="loginsign"><a href="#" id="backToSignup">Back to Sign Up</a></p>
+    </div>
+
+    <script>
+        // Toggle between Sign Up and Forgot Password forms
+        const authContainer = document.getElementById("authContainer");
+        const forgotPasswordContainer = document.getElementById("forgotPasswordContainer");
+        const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+        const backToSignup = document.getElementById("backToSignup");
+
+        forgotPasswordLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            authContainer.style.display = "none";
+            forgotPasswordContainer.style.display = "block";
+        });
+
+        backToSignup.addEventListener("click", (e) => {
+            e.preventDefault();
+            forgotPasswordContainer.style.display = "none";
+            authContainer.style.display = "block";
+        });
+
+        // Handle Forgot Password Form Submission
+        const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+
+        forgotPasswordForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("forgotEmail").value;
+            const newPassword = document.getElementById("newPassword").value;
+
+            try {
+                const response = await fetch("/forgot-password", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, newPassword }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Password reset successfully! Please log in with your new password.");
+                    window.location.href = "/login";
+                } else {
+                    alert(result.error || "Failed to reset password. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again.");
+            }
+        });
+    </script>
 </body>
 </html>

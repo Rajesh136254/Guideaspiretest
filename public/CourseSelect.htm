@@ -4,9 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Your Class - GuideAspire</title>
-    <link rel="stylesheet" href="GuideAspire.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">  <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #1a2a6c, #b21f1f, #fdbb2d); /* Vibrant gradient background */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden; /* Prevents scrollbars during animation */
+        }
+
+        .class-title {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            font-weight: 700;
+            text-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.1rem;
+            animation: fadeInUp 1s ease-in-out; /* Add a subtle fade-in animation */
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .class-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Larger card size */
+            gap: 3rem;
+            max-width: 1200px;
+            width: 90%;
+            animation: fadeInUp 1.2s ease-in-out; /* Staggered animation */
+        }
+
+        .class-card {
+            background: rgba(255, 255, 255, 0.1); /* Semi-transparent white background */
+            border-radius: 1.5rem;
+            padding: 3rem;
+            backdrop-filter: blur(10px); /* Add a blur effect */
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            position: relative; /* For pseudo-element */
+        }
+
+        .class-card:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: 0 1.5rem 2.5rem rgba(0, 0, 0, 0.4);
+        }
+
+        .class-card::before { /* Gradient overlay on hover */
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.25)); /* Adjust opacity for effect */
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .class-card:hover::before {
+            opacity: 1;
+        }
+
+        .class-link {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 600;
+            padding: 1.5rem 2.5rem;
+            border-radius: 2rem;
+            background: rgba(0, 0, 0, 0.2); /* Semi-transparent dark background */
+            transition: background 0.3s, transform 0.3s;
+            display: inline-block;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .class-link:hover {
+            background: rgba(0, 0, 0, 0.4);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) { /* Adjust breakpoint as needed */
+            .class-title {
+                font-size: 2.5rem;
+            }
+            .class-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Smaller cards on smaller screens */
+                gap: 2rem;
+            }
+            .class-card {
+                padding: 2rem;
+            }
+            .class-link {
+                font-size: 1.2rem;
+                padding: 1.2rem 2rem;
+            }
+        }
+        .grad1 {
+            margin: 0 auto;
+            display: block;
+            width: 200px; /* Or your desired width */
+        }
+    </style>
 </head>
-<body class="main-container1">
+<body>
     <h2 class="class-title">Select Your Class Level</h2>
     <div class="class-container">
         <div class="class-card">
@@ -19,7 +135,7 @@
             <a href="/class9-12" class="class-link">9th - 12th Grade</a>
         </div>
         <div class="class-card">
-            <a href="/grad" class="class-link">Graduation Level</a>
+            <a href="/grad" class="class-link grad1">Graduation Level</a>
         </div>
     </div>
 </body>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,11 +53,7 @@ body {
 .sidebar li:hover {
     background: rgba(255, 255, 255, 0.4);
 }
-.siderbar li.active {
-    background-color: #da4de7;
-    color: white;
-    font-weight: bold;
-}
+
 /* Main Content */
 .main-content {
     flex: 1;
@@ -165,12 +162,6 @@ iframe {
 .links-section button:hover, .links-section a:hover {
     background: #6a11cb;
 }
-.name{
-    color:#da4de7;
-    font-size:23px;
-    font-weight:bold;
-    text-align:center;
-}
 
     </style>
 </head>
@@ -178,12 +169,12 @@ iframe {
     <div class="container">
         <!-- Left Navigation -->
         <nav class="sidebar">
-            <h1 class="name">GuideAspire</h1>
             <ul>
-                <li class="class-item" data-class="6">Class 6</li>
-                <li class="class-item" data-class="7">Class 7</li>
-                <li class="class-item" data-class="8">Class 8</li>
-                
+                <li class="class-item" data-class="1">Class 1</li>
+                <li class="class-item" data-class="2">Class 2</li>
+                <li class="class-item" data-class="3">Class 3</li>
+                <li class="class-item" data-class="4">Class 4</li>
+                <li class="class-item" data-class="5">Class 5</li>
             </ul>
         </nav>
         
@@ -227,43 +218,29 @@ iframe {
     const completeBtn = document.getElementById("complete-btn");
     const languageSelect = document.getElementById("language-select");
     const classItems = document.querySelectorAll(".class-item");
-   
-
+    const userEmail = localStorage.getItem("userEmail") || "guest";
     
-    
-    let selectedClass = 6;
+    let selectedClass = 1;
     let selectedDay = 1;
-    let progress = {};
+    let progress = JSON.parse(localStorage.getItem(`progress_${userEmail}`)) || {};
 
     const topics = {
-        6: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
-        7: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
-        8: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
+        1: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
+        2: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
+        3: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
+        4: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
+        5: ["Advanced Algebra", "Trigonometry", "Probability", "Statistics", "Logical Reasoning"]
     };
 
     const exerciseLinks = {
-        6: ["https://exercise1.com", "https://exercise2.com"],
-        7: ["https://exercise3.com", "https://exercise4.com"],
-        8: ["https://exercise3.com", "https://exercise4.com"]
+        1: ["https://exercise1.com", "https://exercise2.com"],
+        2: ["https://exercise3.com", "https://exercise4.com"]
     };
 
     const projectLinks = {
-        6: ["https://project1.com", "https://project2.com"],
-        7: ["https://project3.com", "https://project4.com"],
-        8: ["https://project3.com", "https://project4.com"]
+        1: ["https://project1.com", "https://project2.com"],
+        2: ["https://project3.com", "https://project4.com"]
     };
-
-    // Fetch progress from the database
-    async function fetchProgress() {
-        try {
-            const response = await fetch(`/progress/${userEmail}/${selectedClass}`);
-            const completedDays = await response.json();
-            progress[selectedClass] = completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
-            updateDays();
-        } catch (error) {
-            console.error("Error fetching progress:", error);
-        }
-    }
 
     function updateDays() {
         daysContainer.innerHTML = "";
@@ -292,6 +269,7 @@ iframe {
             daysContainer.appendChild(day);
         }
     }
+    
 
     function loadDay(day) {
         selectedDay = day;
@@ -311,27 +289,20 @@ iframe {
         return `${baseURL}${videoIDs[lang][(classNum + dayNum) % videoIDs[lang].length]}`;
     }
 
-    completeBtn.addEventListener("click", async function () {
-        if (!progress[selectedClass] || progress[selectedClass] < selectedDay + 1) {
-            progress[selectedClass] = selectedDay + 1;
-            try {
-                await fetch('/progress', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: userEmail, classNumber: selectedClass, dayNumber: selectedDay })
-                });
-                updateDays();
-            } catch (error) {
-                console.error("Error saving progress:", error);
-            }
-        }
-    });
+   completeBtn.addEventListener("click", function () {
+    if (!progress[selectedClass] || progress[selectedClass] < selectedDay + 1) {
+        progress[selectedClass] = selectedDay + 1;
+        localStorage.setItem(`progress_${userEmail}`, JSON.stringify(progress));
+        updateDays();
+    }
+});
+
 
     classItems.forEach(item => {
         item.addEventListener("click", function () {
             selectedClass = parseInt(this.getAttribute("data-class"));
             selectedDay = 1; 
-            fetchProgress();
+            updateDays();
             loadDay(1);
         });
     });
@@ -339,10 +310,12 @@ iframe {
     languageSelect.addEventListener("change", function () {
         loadDay(selectedDay);
     });
+
     updateDays();
-    fetchProgress();
     loadDay(1);
 });
+
+
     </script>
 </body>
 </html>
