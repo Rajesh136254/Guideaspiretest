@@ -686,7 +686,7 @@
         </div>
       </div>
     </div>
-
+    <script src="data.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const daysContainer = document.getElementById("days-scroll");
@@ -976,16 +976,13 @@
             topics[selectedClass][(day - 1) % topics[selectedClass].length]
           }`;
           videoFrame.src = getVideoURL(selectedClass, day);
-          exerciseLink.href = exerciseLinks[selectedClass]
-            ? exerciseLinks[selectedClass][
-                (day - 1) % exerciseLinks[selectedClass].length
-              ]
-            : "#";
-          projectLink.href = projectLinks[selectedClass]
-            ? projectLinks[selectedClass][
-                (day - 1) % projectLinks[selectedClass].length
-              ]
-            : "#";
+
+// Update Exercise and Project links dynamically
+const exerciseLink = document.getElementById("exercise-link");
+const projectLink = document.getElementById("project-link");
+
+exerciseLink.href = `quiz.html?class=${selectedClass}&day=${selectedDay}`;
+projectLink.href = `project.html?class=${selectedClass}&day=${selectedDay}`;
         }
 
         function getVideoURL(classNum, dayNum) {
@@ -1156,6 +1153,8 @@ document.addEventListener("fullscreenchange", handleFullscreenChange);
 document.addEventListener("webkitfullscreenchange", handleFullscreenChange); // For Safari
 document.addEventListener("mozfullscreenchange", handleFullscreenChange); // For Firefox
 document.addEventListener("MSFullscreenChange", handleFullscreenChange); // For IE/Edge
+
     </script>
+  
   </body>
 </html>

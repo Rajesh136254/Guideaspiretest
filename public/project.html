@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Project Page Styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .project-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .project-content {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      animation: slideIn 0.5s ease-in-out;
+    }
+
+    .project-content h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+
+    .project-content p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .project-content button {
+      background: #ff6f61;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    .project-content button:hover {
+      background: #ff3b2f;
+    }
+
+    .badges {
+      margin-top: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #ff6f61;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      margin: 5px;
+      font-size: 0.9rem;
+      animation: bounce 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="project-container">
+    <h1>Project</h1>
+    <div id="project-content" class="project-content"></div>
+    <div class="badges" id="badges"></div>
+  </div>
+  <script src="data.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const classId = urlParams.get('class');
+    const dayId = urlParams.get('day');
+
+    const projectContent = document.getElementById("project-content");
+    const badgesContainer = document.getElementById("badges");
+    const currentClass = classes.find(c => c.classId == classId);
+    const currentDay = currentClass.days.find(d => d.dayId == dayId);
+
+    if (currentDay && currentDay.project) {
+      projectContent.innerHTML = `
+        <h3>${currentDay.project.title}</h3>
+        <p>${currentDay.project.instructions}</p>
+        <button onclick="showSolution()">Show Solution</button>
+        <div id="solution" style="display: none;">
+          <p><strong>Solution:</strong> ${currentDay.project.solution}</p>
+        </div>
+      `;
+      awardBadges();
+    } else {
+      projectContent.innerHTML = `<p>No project found for this day.</p>`;
+    }
+
+    function showSolution() {
+      document.getElementById("solution").style.display = "block";
+    }
+
+    function awardBadges() {
+      badgesContainer.innerHTML = `<div class="badge">Project Completed! 🎉</div>`;
+    }
+  </script>
+</body>
+</html>
