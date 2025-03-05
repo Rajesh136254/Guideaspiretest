@@ -1,344 +1,1161 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GuideAspire</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
     <script defer src="script.js"></script>
+    <link rel="icon" href="Homepage1.png" type="image/png" />
+    <script
+      src="https://kit.fontawesome.com/19e8ada8de.js"
+      crossorigin="anonymous"
+    ></script>
     <style>
-        /* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    background: #f4f4f4;
-    overflow: hidden; /* Prevents entire page scrolling */
-}
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background: #f4f4f4;
+        overflow: hidden; /* Prevents entire page scrolling */
+      }
 
-.container {
-    display: flex;
-    width: 100%;
-    height: 100vh; /* Ensures the layout stays within the viewport */
-}
+      .container {
+        display: flex;
+        width: 100%;
+        height: 100vh; /* Ensures the layout stays within the viewport */
+      }
 
-/* Sidebar Navigation */
-.sidebar {
-    width: 200px; /* Increased width */
-    background: linear-gradient(to bottom, #6a11cb, #2575fc);
-    padding: 20px;
-    height: 100vh; /* Fixed full height */
-    color: white;
-    box-shadow: 2px 0px 10px rgba(0,0,0,0.2);
-    position: fixed; /* Keeps sidebar fixed */
-    top: 0;
-    left: 0;
-    overflow-y: auto;
-}
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-.sidebar li {
-    padding: 15px;
-    margin: 10px 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    transition: 0.3s;
-}
-.sidebar li:hover {
-    background: rgba(255, 255, 255, 0.4);
-}
+      /* Sidebar Navigation */
+      .sidebar {
+        width: 200px; /* Increased width */
+        background: linear-gradient(to bottom, #6a11cb, #2575fc);
+        padding: 20px;
+        height: 100vh; /* Fixed full height */
+        color: white;
+        box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+        position: fixed; /* Keeps sidebar fixed */
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+      }
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
+      .sidebar li {
+        padding: 15px;
+        margin: 10px 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        transition: 0.3s;
+      }
+      .sidebar li:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
 
-/* Main Content */
-.main-content {
-    flex: 1;
-    padding: 20px;
-    margin-left: 250px; /* Adjusted to match the increased sidebar width */
-    overflow-y: auto;
-}
+      /* General reset for list */
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+      }
 
-.top-bar {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 15px;
-}
+      /* Base style for list items */
+      .class-item {
+        padding: 15px 20px;
+        margin: 10px 0;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #333;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+      }
 
-#language-select {
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
+      /* Hover effect */
+      .class-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+      }
 
-/* Days Scroll */
-.days-container {
-    max-width: 100%;
-    overflow-x: auto; /* Enables scrolling */
-    white-space: nowrap;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
-    position: relative;
-}
-#days-scroll {
-    display: flex;
-    overflow-x: auto; /* Enables horizontal scrolling */
-    overflow-y: hidden;
-    white-space: nowrap;
-    max-width: 100%;
-    padding: 10px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-}
+      /* Selected item style */
+      .class-item.selected {
+        background: linear-gradient(145deg, #007bff, #005bb5);
+        color: white;
+        box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+      }
 
-.day-item {
-    padding: 10px 20px;
-    margin: 5px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+      /* Add a subtle animation for selection */
+      .class-item.selected::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: ripple 0.8s ease-out;
+      }
 
-.day-item:hover {
-    background-color: #0056b3;
-}
+      @keyframes ripple {
+        from {
+          transform: scale(0);
+          opacity: 1;
+        }
+        to {
+          transform: scale(1);
+          opacity: 0;
+        }
+      }
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        padding: 20px;
+        margin-left: 250px; /* Adjusted to match the increased sidebar width */
+        overflow-y: auto;
+      }
 
-.locked {
-    background-color: #ccc !important;
-    cursor: not-allowed;
-    opacity: 0.5;
-    pointer-events: none;
-}
+      .top-bar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+      }
 
-.completed {
-    background-color: #28a745 !important;
-}
+      #language-select {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
 
-.unlocked {
-    background-color: #ffc107 !important;
-}
+      /* Days Scroll */
+      .days-container {
+        max-width: 100%;
+        overflow-x: auto; /* Enables scrolling */
+        white-space: nowrap;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+      #days-scroll {
+        display: flex;
+        overflow-x: auto; /* Enables horizontal scrolling */
+        overflow-y: hidden;
+        white-space: nowrap;
+        max-width: 100%;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 10px;
+        margin-right: 25px;
+      }
 
+      .day-item {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
 
+      .day-item:hover {
+        background-color: #0056b3;
+      }
 
-/* Video Section */
-#topic-name {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 10px;
-}
+      .locked {
+        background-color: #ccc !important;
+        cursor: not-allowed;
+        opacity: 0.5;
+        pointer-events: none;
+      }
 
-iframe {
-    width: 100%;
-    height: 550px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-    margin-top: 10px; /* Creates space between the scrolling days and the video frame */
-}
+      .completed {
+        background-color: #28a745 !important;
+      }
 
-/* Links & Button */
-.links-section {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-}
-.links-section a, .links-section button {
-    padding: 10px 15px;
-    background: #2575fc;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    text-decoration: none;
-}
-.links-section button:hover, .links-section a:hover {
-    background: #6a11cb;
-}
+      .unlocked {
+        background-color: #ffc107 !important;
+      }
 
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Left Navigation -->
-        <nav class="sidebar">
-            <ul>
-                <li class="class-item" data-class="1">Class 1</li>
-                <li class="class-item" data-class="2">Class 2</li>
-                <li class="class-item" data-class="3">Class 3</li>
-                <li class="class-item" data-class="4">Class 4</li>
-                <li class="class-item" data-class="5">Class 5</li>
-            </ul>
-        </nav>
+      /* Video Section */
+      #topic-name {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      iframe {
+        width: 100%;
+        height: 550px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        margin-top: 10px; /* Creates space between the scrolling days and the video frame */
+      }
+
+      /* Links & Button */
+      .links-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 40px;
+      }
+      .links-section a,
+      .links-section button {
+        padding: 10px 15px;
+        background: #2575fc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+        text-decoration: none;
+      }
+      .links-section button:hover,
+      .links-section a:hover {
+        background: #6a11cb;
+      }
+
+      /* Sidebar Styling */
+      .sidenav {
+        width: 200px;
+        background: linear-gradient(145deg, #2c3e50, #34495e);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Back Link Styling */
+      .backsection {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ecf0f1;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.4s ease;
+        font-size: 14px;
+        margin-bottom: 20px;
+        width: 100%;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .backsection i {
+        margin-right: 10px;
+        font-size: 12px;
+        transition: transform 0.4s ease;
+      }
+
+      .backsection:hover {
+        background-color: rgba(26, 188, 156, 0.8);
+        transform: translateX(10px);
+        box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+      }
+
+      .backsection:hover i {
+        transform: translateX(-5px);
+      }
+
+      /* Guide Head Styling */
+      .GuideHead {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #ecf0f1;
+        text-align: left;
+        margin-top: 10px;
+        padding: 10px 0;
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .GuideHead::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #1abc9c, #3498db);
+        bottom: 0;
+        left: -100%;
+        transition: left 0.5s ease;
+      }
+
+      .GuideHead:hover::before {
+        left: 0;
+      }
+
+      .GuideHead span {
+        display: inline-block;
+        transition: transform 0.4s ease;
+      }
+
+      .GuideHead:hover span {
+        transform: translateX(10px);
+      }
+
+      .video-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40px; /* Blocks only the bottom part */
+        background: rgba(255, 255, 255, 0); /* Fully transparent */
+        z-index: 2;
+        pointer-events: auto; /* Blocks clicks on the bottom */
+      }
+      .video-container {
+        position: relative;
         
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Top Section: Language Selection -->
-            <div class="top-bar">
-                <select id="language-select">
-                    <option value="english">English</option>
-                    <option value="telugu">Telugu</option>
-                </select>
-            </div>
-            
-            <!-- Days Navigation -->
-            <div class="days-container">
-                <div class="days-scroll" id="days-scroll">
-                    <!-- Days will be generated dynamically -->
-                </div>
-            </div>
-            
-            <!-- Video Section -->
-            <h2 id="topic-name">Topic Name</h2>
-            <iframe id="video-frame" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
-            
-            <!-- Exercise and Project Links -->
-            <div class="links-section">
-                <a id="exercise-link" href="#" target="_blank">Go to Exercise</a>
-                <a id="project-link" href="#" target="_blank">Go to Project</a>
-                <button id="complete-btn">Mark Day as Complete</button>
-            </div>
+      }
+
+      /* Import Google Fonts */
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Montserrat:wght@400;500;600&display=swap");
+
+      /* General Styling */
+      body {
+        font-family: "Montserrat", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f9;
+      }
+
+      /* Days Container */
+      .days-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Header Section */
+      .header-section {
+        margin-bottom: 25px;
+        padding: 20px;
+        background: linear-gradient(145deg, #6a11cb, #2575fc);
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        color: white;
+        text-align: center;
+      }
+
+      .section-header {
+        font-size: 24px;
+        font-weight: 700;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .sub-section-header {
+        font-size: 18px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px;
+        border-radius: 10px;
+        border-left: 18px solid #ffc107;
+        border-right: 18px solid #ffc107;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.5s ease-in-out;
+      }
+
+      /* Days Grid */
+      .days-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 15px;
+        padding: 10px;
+      }
+
+      /* Day Item Styling */
+      .day-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        padding-top: 25px;
+        padding-right: 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: "Poppins", sans-serif;
+        position: relative;
+        animation: fadeIn 0.5s ease-in-out;
+        margin-right: 20px;
+      }
+
+      .day-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        background-color: #0056b3;
+      }
+
+      /* Locked Day Styling */
+      .day-item.locked {
+        background-color: #ccc;
+        cursor: not-allowed;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      /* Completed Day Styling */
+      .day-item.completed {
+        background-color: #28a745;
+      }
+
+      .day-item.completed::after {
+        content: "⭐";
+        position: absolute;
+        top: 3px;
+        right: 0px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 5px;
+        border-radius: 50%;
+        animation: pulse 1s infinite;
+      }
+
+      /* Unlocked Day Styling */
+      .day-item.unlocked {
+        background-color: #ffc107;
+        color: #2c3e50;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .section-header {
+          font-size: 20px;
+        }
+        .sub-section-header {
+          font-size: 16px;
+        }
+        .days-grid {
+          grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        }
+        .day-item {
+          padding: 12px;
+          font-size: 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .section-header {
+          font-size: 18px;
+        }
+        .sub-section-header {
+          font-size: 14px;
+        }
+        .days-grid {
+          grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        }
+        .day-item {
+          padding: 10px;
+          font-size: 12px;
+        }
+      }
+
+      /* Navigation Buttons Container */
+      .navigation-buttons {
+        display: flex;
+        justify-content: space-between; /* Space out buttons */
+        margin-bottom: 15px; /* Add some space below the buttons */
+      }
+
+      /* Navigation Buttons */
+      .nav-button {
+        padding: 10px 20px;
+        background: linear-gradient(145deg, #6a11cb, #2575fc);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .nav-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(145deg, #2575fc, #6a11cb);
+      }
+
+      /* Disable buttons when not applicable */
+      .nav-button[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      /* Container for navigation buttons */
+      .nav-buttons-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      /* Navigation buttons */
+      .nav-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+
+      .nav-button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        .nav-button {
+          padding: 8px 16px;
+          font-size: 14px;
+        }
+      }
+
+      .video-container {
+  position: relative;
+}
+
+.overlay-top,
+.overlay-bottom {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0); /* Transparent background */
+  pointer-events: auto; /* Blocks clicks */
+  z-index: 2; /* Ensures it's above the iframe */
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.overlay-top {
+  top: 0;
+  height: 100px; /* Blocks top 100px in normal mode */
+}
+
+.overlay-bottom {
+  bottom: 50px;
+  height: 130px; /* Blocks bottom 130px in normal mode */
+}
+
+/* Fullscreen mode styles */
+.video-container.fullscreen .overlay-top {
+  height: 22vh; /* Double + 20px in viewport height units */
+}
+
+.video-container.fullscreen .overlay-bottom {
+  bottom: 12vh; /* Double + 20px in viewport height units */
+  height: 28vh; /* Double + 20px in viewport height units */
+}
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Left Navigation -->
+
+      <nav class="sidebar">
+        <a href="CourseSelect.htm" class="backsection"
+          ><i class="fa-solid fa-arrow-left"></i> Go to LevelSelection</a
+        >
+        <h1 class="GuideHead">GuideAspire</h1>
+
+        <ul>
+          <li class="class-item" data-class="1">Class 1</li>
+          <li class="class-item" data-class="2">Class 2</li>
+          <li class="class-item" data-class="3">Class 3</li>
+          <li class="class-item" data-class="4">Class 4</li>
+          <li class="class-item" data-class="5">Class 5</li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Section: Language Selection -->
+        <div class="top-bar">
+          <select id="language-select">
+            <option value="english">English</option>
+            <option value="telugu">Telugu</option>
+          </select>
         </div>
+
+        <!-- Days Navigation -->
+        <!-- Inside the .days-container -->
+        <div class="days-container">
+          <!-- Header Section -->
+          <div class="header-section">
+            <div class="section-header"></div>
+            <div class="sub-section-header"></div>
+          </div>
+          <!-- Navigation Buttons Container -->
+          <div class="nav-buttons-container">
+            <!-- Navigation buttons will be dynamically added here -->
+          </div>
+          <!-- Days Scroll -->
+          <div class="days-scroll" id="days-scroll">
+            <!-- Days will be dynamically added here -->
+          </div>
+        </div>
+
+        <!-- Video Section -->
+        <h2 id="topic-name">Topic Name</h2>
+        <div class="video-container">
+            <div class="overlay-top"></div> <!-- Blocks top 50px -->
+            <div class="overlay-bottom"></div> <!-- Blocks bottom 130px -->
+            <iframe
+              id="video-frame"
+              width="560"
+              height="315"
+              src=""
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowfullscreen
+            ></iframe>
+          </div>
+        <!-- Exercise and Project Links -->
+        <div class="links-section">
+          <a id="exercise-link" href="#" target="_blank">Go to Exercise</a>
+          <a id="project-link" href="#" target="_blank">Go to Project</a>
+          <button id="complete-btn">Mark Day as Complete</button>
+        </div>
+      </div>
     </div>
 
     <script>
-        
-document.addEventListener("DOMContentLoaded", function () {
-    const daysContainer = document.getElementById("days-scroll");
-    const videoFrame = document.getElementById("video-frame");
-    const topicName = document.getElementById("topic-name");
-    const exerciseLink = document.getElementById("exercise-link");
-    const projectLink = document.getElementById("project-link");
-    const completeBtn = document.getElementById("complete-btn");
-    const languageSelect = document.getElementById("language-select");
-    const classItems = document.querySelectorAll(".class-item");
-    const userEmail = localStorage.getItem("userEmail"); // Ensure this is set during login
+      document.addEventListener("DOMContentLoaded", function () {
+        const daysContainer = document.getElementById("days-scroll");
+        const videoFrame = document.getElementById("video-frame");
+        const topicName = document.getElementById("topic-name");
+        const exerciseLink = document.getElementById("exercise-link");
+        const projectLink = document.getElementById("project-link");
+        const completeBtn = document.getElementById("complete-btn");
+        const languageSelect = document.getElementById("language-select");
+        const classItems = document.querySelectorAll(".class-item");
+        const userEmail = localStorage.getItem("userEmail"); // Ensure this is set during login
 
-    if (!userEmail) {
-        alert("Please log in to track your progress.");
-        window.location.href = "/login";
-        return;
-    }
-
-    let selectedClass = 1;
-    let selectedDay = 1;
-    let progress = {};
-
-    const topics = {
-        1: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
-        2: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
-        3: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
-        4: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
-        5: ["Advanced Algebra", "Trigonometry", "Probability", "Statistics", "Logical Reasoning"]
-    };
-
-    const exerciseLinks = {
-        1: ["https://exercise1.com", "https://exercise2.com"],
-        2: ["https://exercise3.com", "https://exercise4.com"]
-    };
-
-    const projectLinks = {
-        1: ["https://project1.com", "https://project2.com"],
-        2: ["https://project3.com", "https://project4.com"]
-    };
-
-    // Fetch progress from the database
-    async function fetchProgress() {
-        try {
-            const response = await fetch(`/progress/${userEmail}/${selectedClass}`);
-            const completedDays = await response.json();
-            progress[selectedClass] = completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
-            updateDays();
-        } catch (error) {
-            console.error("Error fetching progress:", error);
+        if (!userEmail) {
+          alert("Please log in to track your progress.");
+          window.location.href = "/login";
+          return;
         }
-    }
 
-    function updateDays() {
-        daysContainer.innerHTML = "";
-        let currentProgress = progress[selectedClass] || 1; // Ensure day 1 is always unlocked
+        let selectedClass = 1;
+        let selectedDay = 1;
+        let progress = {};
 
-        for (let i = 1; i <= 50; i++) {
+        const topics = {
+          1: [
+            "Numbers from 1-20",
+            "Introduction to Shapes",
+            "Introduction to object sizes (big vs. small).",
+            "Introduction to animals (categorizing pets and wild animals).",
+            "Counting objects in a group.",
+            "Solving jigsaw puzzles.",
+            "Solving jigsaw puzzles.",
+            "Guess animal by shadow",
+            "Learn fruits and Vegetables",
+            "Understanding favourite food and basic English",
+
+            "Introduction to yourself",
+            "Describing objects (color, shape, size)",
+            "Writing numbers and letters",
+            "Writing Alphabets",
+            "Listening to a story",
+            "Following verbal instructions",
+            "Reciting a rhyme",
+            "Ryme on favourite toy",
+            "Understanding facial expressions (happy, sad, angry)",
+            "Using gestures to communicate (waving, nodding)",
+            "Building a tower with blocks",
+            "Creating a new shape with clay/playdough",
+            "Drawing pictures",
+            "Designing a simple pattern",
+            "Drawing a tree and coloring it",
+            "Creating a rainbow with colors",
+            "Listening to a story and retelling it",
+            "Creating a simple story with pictures",
+            "Solving a maze",
+            "Finding hidden objects in a picture",
+            "Introduction to a computer (mouse, keyboard)",
+            "Using computer",
+            "Solving simple coding puzzles (unplugged). – not done",
+            "Picture story sequence",
+            "Counting objects and recording numbers",
+            "Sorting and matching",
+            "Understanding what robots do",
+            "Real life robots",
+            "Online privacy for kids",
+            "Responsible user of Technology for kids",
+            "Understanding morning routines",
+            "Learning to follow a daily schedule. – not done",
+            "Identifying emotions (happy, sad, angry)",
+            "Expressing emotions through drawing",
+            "Adjusting to a new activity. – not done",
+            "Trying a new food or game. – not done",
+            "Understanding money (coins and notes)",
+            "Saving money in a piggy bank",
+            "Building a tower with friends. – not done",
+            "Playing a team game (e.g., passing a ball)",
+          ],
+          2: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
+          3: [
+            "Multiplication",
+            "Division",
+            "Measurement",
+            "Fractions",
+            "Graphs",
+          ],
+          4: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
+          5: [
+            "Advanced Algebra",
+            "Trigonometry",
+            "Probability",
+            "Statistics",
+            "Logical Reasoning",
+          ],
+        };
+
+        const exerciseLinks = {
+          1: ["https://exercise1.com", "https://exercise2.com"],
+          2: ["https://exercise3.com", "https://exercise4.com"],
+          3: ["https://exercise1.com", "https://exercise2.com"],
+          4: ["https://exercise3.com", "https://exercise4.com"],
+          5: ["https://exercise1.com", "https://exercise2.com"],
+        };
+
+        const projectLinks = {
+          1: ["https://project1.com", "https://project2.com"],
+          2: ["https://project3.com", "https://project4.com"],
+          3: ["https://project1.com", "https://project2.com"],
+          4: ["https://project3.com", "https://project4.com"],
+          5: ["https://project1.com", "https://project2.com"],
+        };
+
+        // Fetch progress from the database
+        async function fetchProgress() {
+          try {
+            const response = await fetch(
+              `/progress/${userEmail}/${selectedClass}`
+            );
+            const completedDays = await response.json();
+            progress[selectedClass] =
+              completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
+            updateDays();
+          } catch (error) {
+            console.error("Error fetching progress:", error);
+          }
+        }
+
+        let currentRangeStart = 1; // Track the start of the current range (e.g., 1, 11, 21, etc.)
+
+        function updateDays() {
+          const daysContainer = document.getElementById("days-scroll");
+          const sectionHeader = document.querySelector(".section-header");
+          const subSectionHeader = document.querySelector(
+            ".sub-section-header"
+          );
+          let currentProgress = progress[selectedClass] || 1; // Ensure day 1 is always unlocked
+
+          // Clear existing days
+          daysContainer.innerHTML = "";
+
+          // Determine the current range (e.g., 1-10, 11-20)
+          const rangeStart = currentRangeStart;
+          const rangeEnd = Math.min(rangeStart + 9, 50); // Ensure it doesn't exceed 50 days
+
+          // Update Section Header
+          sectionHeader.textContent = `Day ${rangeStart}-${rangeEnd}: ${getSectionTitle(
+            rangeStart
+          )}`;
+
+          // Update Sub-Section Header
+          const subRangeStart = Math.floor((selectedDay - 1) / 2) * 2 + 1;
+          const subRangeEnd = Math.min(subRangeStart + 1, rangeEnd); // Ensure it doesn't exceed the range
+          subSectionHeader.textContent = `• Day ${subRangeStart}-${subRangeEnd}: ${getSubSectionTitle(
+            subRangeStart
+          )}`;
+
+          // Add days for the current range
+          for (let i = rangeStart; i <= rangeEnd; i++) {
             const day = document.createElement("div");
             day.classList.add("day-item");
             day.textContent = `Day ${i}`;
 
             if (i < currentProgress) {
-                day.classList.add("completed");
-                day.innerHTML += " ⭐";
+              day.classList.add("completed");
             } else if (i === currentProgress) {
-                day.classList.add("unlocked");
+              day.classList.add("unlocked");
             } else {
-                day.classList.add("locked");
+              day.classList.add("locked");
             }
 
             day.addEventListener("click", () => {
-                if (!day.classList.contains("locked")) {
-                    loadDay(i);
-                }
+              if (!day.classList.contains("locked")) {
+                selectedDay = i;
+                loadDay(i);
+                updateDays(); // Refresh headers and days
+              }
             });
 
             daysContainer.appendChild(day);
+          }
+
+          // Add navigation buttons
+          addNavigationButtons();
         }
-    }
 
-    function loadDay(day) {
-        selectedDay = day;
-        topicName.textContent = `Class ${selectedClass} - ${topics[selectedClass][(day - 1) % topics[selectedClass].length]}`;
-        videoFrame.src = getVideoURL(selectedClass, day);
-        exerciseLink.href = exerciseLinks[selectedClass] ? exerciseLinks[selectedClass][(day - 1) % exerciseLinks[selectedClass].length] : "#";
-        projectLink.href = projectLinks[selectedClass] ? projectLinks[selectedClass][(day - 1) % projectLinks[selectedClass].length] : "#";
-    }
+        // Helper function to add navigation buttons
+        function addNavigationButtons() {
+          const navButtonsContainer = document.querySelector(
+            ".nav-buttons-container"
+          );
 
-    function getVideoURL(classNum, dayNum) {
-        const lang = languageSelect.value;
-        const baseURL = "https://www.youtube.com/embed/";
-        const videoIDs = {
-            english: ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
-            telugu: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"]
-        };
-        return `${baseURL}${videoIDs[lang][(classNum + dayNum) % videoIDs[lang].length]}`;
-    }
+          // Clear existing navigation buttons
+          navButtonsContainer.innerHTML = "";
 
-    completeBtn.addEventListener("click", async function () {
-        if (!progress[selectedClass] || progress[selectedClass] < selectedDay + 1) {
+          // Add "Previous" button if not on the first range
+          if (currentRangeStart > 1) {
+            const prevButton = document.createElement("button");
+            prevButton.classList.add("nav-button", "prev-button");
+            prevButton.textContent = "◄ Previous";
+            prevButton.addEventListener("click", () => {
+              currentRangeStart -= 10;
+              updateDays();
+            });
+            navButtonsContainer.appendChild(prevButton);
+          }
+
+          // Add "Next" button if not on the last range
+          if (currentRangeStart + 10 <= 50) {
+            const nextButton = document.createElement("button");
+            nextButton.classList.add("nav-button", "next-button");
+            nextButton.textContent = "Next ►";
+            nextButton.addEventListener("click", () => {
+              currentRangeStart += 10;
+              updateDays();
+            });
+            navButtonsContainer.appendChild(nextButton);
+          }
+        }
+
+        // Helper function to get section titles for every 10 days
+        function getSectionTitle(day) {
+          if (day >= 1 && day <= 10) return "Analytical and Logical Skills";
+          if (day >= 11 && day <= 20) return "Communication Skills";
+          if (day >= 21 && day <= 30) return "Creative Thinking";
+          if (day >= 31 && day <= 40) return "Technology Skills";
+          if (day >= 41 && day <= 50) return "Life Skills";
+          return "";
+        }
+
+        // Helper function to get sub-section titles for every 2 days
+        function getSubSectionTitle(day) {
+          if (day % 2 === 1) {
+            if (day >= 1 && day <= 2)
+              return "Problem-Solving (real-life scenarios)";
+            if (day >= 3 && day <= 4)
+              return "Critical Thinking (evaluating simple choices)";
+            if (day >= 5 && day <= 6) return "Data Analysis (basic concepts)";
+            if (day >= 7 && day <= 8)
+              return "Logical Reasoning (simple puzzles)";
+            if (day >= 9 && day <= 10)
+              return "Decision-Making (simple choices)";
+            if (day >= 11 && day <= 12)
+              return "Verbal Communication (speaking clearly)";
+            if (day >= 13 && day <= 14)
+              return "Written Communication (basic writing)";
+            if (day >= 15 && day <= 16)
+              return "Active Listening (following instructions)";
+            if (day >= 17 && day <= 18)
+              return "Public Speaking (basic confidence-building)";
+            if (day >= 19 && day <= 20)
+              return "Non-Verbal Communication (body language)";
+            if (day >= 21 && day <= 22)
+              return "Innovation (simple problem-solving)";
+            if (day >= 23 && day <= 24)
+              return "Design Thinking (basic creativity)";
+            if (day >= 25 && day <= 26)
+              return "Artistic Expression (drawing and coloring)";
+            if (day >= 27 && day <= 28)
+              return "Storytelling (basic narratives)";
+            if (day >= 29 && day <= 30)
+              return "Creative Problem-Solving (simple challenges)";
+            if (day >= 31 && day <= 32)
+              return "Digital Literacy (basic computer use)";
+            if (day >= 33 && day <= 34)
+              return "Coding Basics (logical thinking)";
+            if (day >= 35 && day <= 36)
+              return "Data Analysis Tools (basic concepts)";
+            if (day >= 37 && day <= 38)
+              return "AI Basics (introduction to robots)";
+            if (day >= 39 && day <= 40)
+              return "Cybersecurity Awareness (basic safety)";
+            if (day >= 41 && day <= 42)
+              return "Time Management (basic routines)";
+            if (day >= 43 && day <= 44) return "Emotional Intelligence (EQ)";
+            if (day >= 45 && day <= 46) return "Adaptability (simple changes)";
+            if (day >= 47 && day <= 48)
+              return "Financial Literacy (basic concepts)";
+            if (day >= 49 && day <= 50)
+              return "Teamwork and Collaboration (group activities)";
+
+            // Add more as needed
+          }
+          return "";
+        }
+
+        function loadDay(day) {
+          selectedDay = day;
+          topicName.textContent = `Class ${selectedClass} - ${
+            topics[selectedClass][(day - 1) % topics[selectedClass].length]
+          }`;
+          videoFrame.src = getVideoURL(selectedClass, day);
+          exerciseLink.href = exerciseLinks[selectedClass]
+            ? exerciseLinks[selectedClass][
+                (day - 1) % exerciseLinks[selectedClass].length
+              ]
+            : "#";
+          projectLink.href = projectLinks[selectedClass]
+            ? projectLinks[selectedClass][
+                (day - 1) % projectLinks[selectedClass].length
+              ]
+            : "#";
+        }
+
+        function getVideoURL(classNum, dayNum) {
+          const lang = languageSelect?.value;
+          if (!lang) {
+            console.error("Language selection is missing or invalid.");
+            return "";
+          }
+
+          const baseURL = "https://www.youtube.com/embed/";
+
+          const videoIDs = {
+            english: {
+              1: [
+                "ZJEIKkPXirg?rel=0",
+                "jlzX8jt0Now?rel=0",
+                "-6QBmTrJlSQ?rel=0",
+                "KQt3jVyME-k?rel=0",
+                "bJmlRIBh75I?rel=0",
+                "UTftkT41eXk?rel=0",
+                "UTftkT41eXk?rel=0",
+                "jCMR3enaL5k?rel=0",
+                "UcGm_PM2IwY?rel=0",
+                "wc3A5nlIjYM?rel=0",
+                "EkqpxBsiwJA?rel=0",
+                "mao8pKNbW7w?rel=0",
+                "aOMnurkFzns?rel=0",
+                "yr60VVnZ0mo?rel=0",
+                "D9h9HpxPSFo?rel=0",
+                "1Px2s0i46vo?rel=0",
+                "3xqqj9o7TgA?rel=0",
+                "mcM6X3frbRk?rel=0",
+                "jetoWelJJJk?rel=0",
+                "UaXSMoSIW7U?rel=0",
+                "wF-eWTNGKww?rel=0",
+                "dXMU5w0iT30?rel=0",
+                "eGGwB93IGwo?rel=0",
+                "eYlPYEQil54?rel=0",
+                "gExU54kVM0o?rel=0",
+                "Dt4SD4e2Z6E?rel=0",
+                "lY4AK4LVqBA?rel=0",
+                "Zxji4mUdI_o?rel=0",
+                "rwTOzEdIDfA?rel=0",
+                "oR-pDeJ4hac?rel=0",
+                "QtDAzhiTXC4?rel=0",
+                "bzDpo3iuc4I?rel=0",
+                "xwTh1rE1NP4?rel=0",
+                "xwTh1rE1NP4?rel=0",
+                "mKSNQuQrsm0?rel=0",
+                "sX1eHEvYwTo?rel=0",
+                "xbyEP0M9w7k?rel=0",
+                "8wHJjLMnikU?rel=0",
+                "yiKeLOKc1tw?rel=0",
+                "JkkTN0pQ_Ug?rel=0",
+                "819gVNeP1Ko?rel=0",
+                "HwmPtGI-f9A?rel=0",
+                "HwmPtGI-f9A?rel=0",
+                "A8_FMssvrCI?rel=0",
+                "r-7Gk-PXLrQ?rel=0",
+                "r-7Gk-PXLrQ?rel=0",
+                "r-7Gk-PXLrQ?rel=0",
+                "K5K7u8EESOs?rel=0",
+                "SH2PEDBrTk0?rel=0",
+                "SH2PEDBrTk0?rel=0",
+              ],
+              2: ["ZJEIKkPXirg", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
+              3: ["ZJEIKkPXirg", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
+              4: ["ZJEIKkPXirg", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
+              5: ["ZJEIKkPXirg", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
+            },
+            telugu: {
+              1: ["ZJEIKkPXirg", "kJQP7kiw5Fk", "vTIIMJ9tUc8"],
+              2: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"],
+              3: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"],
+              4: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"],
+              5: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"],
+            },
+          };
+
+          classNum = parseInt(classNum, 10);
+
+          if (!videoIDs[lang] || !videoIDs[lang][classNum]) {
+            console.error("Invalid class number or language selection.");
+            return "";
+          }
+
+          // Correct indexing to start from Day 1 properly
+          const videos = videoIDs[lang][classNum];
+          const videoID = videos[(dayNum - 1) % videos.length]; // Fix: Ensure Day 1 gets 1st video
+
+          return `${baseURL}${videoID}`;
+        }
+
+        completeBtn.addEventListener("click", async function () {
+          if (
+            !progress[selectedClass] ||
+            progress[selectedClass] < selectedDay + 1
+          ) {
             progress[selectedClass] = selectedDay + 1;
             try {
-                await fetch('/progress', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: userEmail, classNumber: selectedClass, dayNumber: selectedDay })
-                });
-                updateDays();
+              await fetch("/progress", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  email: userEmail,
+                  classNumber: selectedClass,
+                  dayNumber: selectedDay,
+                }),
+              });
+              updateDays();
             } catch (error) {
-                console.error("Error saving progress:", error);
+              console.error("Error saving progress:", error);
             }
-        }
-    });
+          }
+        });
 
-    classItems.forEach(item => {
-        item.addEventListener("click", function () {
+        classItems.forEach((item) => {
+          item.addEventListener("click", function () {
             selectedClass = parseInt(this.getAttribute("data-class"));
-            selectedDay = 1;
+            selectedDay = 1; // Reset selected day to 1
+            currentRangeStart = 1; // Reset the range start to 1
             fetchProgress();
             loadDay(1);
+          });
         });
-    });
 
-    languageSelect.addEventListener("change", function () {
-        loadDay(selectedDay);
-    });
+        languageSelect.addEventListener("change", function () {
+          loadDay(selectedDay);
+        });
 
-    fetchProgress();
-    loadDay(1);
-});
+        fetchProgress();
+        loadDay(1);
+      });
 
+      // code for stylings change of side class list
+      document.querySelectorAll(".class-item").forEach((item) => {
+        item.addEventListener("click", function () {
+          // Remove the 'selected' class from all items
+          document.querySelectorAll(".class-item").forEach((innerItem) => {
+            innerItem.classList.remove("selected");
+          });
+
+          // Add the 'selected' class to the clicked item
+          this.classList.add("selected");
+
+          // Log the selected item's data-class attribute
+          const selectedClass = this.getAttribute("data-class");
+          console.log("Selected Class:", selectedClass);
+        });
+      });
+
+
+      // Function to handle fullscreen changes
+function handleFullscreenChange() {
+  const videoContainer = document.querySelector(".video-container");
+
+  if (document.fullscreenElement) {
+    // Add fullscreen class when in fullscreen
+    videoContainer.classList.add("fullscreen");
+  } else {
+    // Remove fullscreen class when exiting fullscreen
+    videoContainer.classList.remove("fullscreen");
+  }
+}
+
+// Listen for fullscreen changes
+document.addEventListener("fullscreenchange", handleFullscreenChange);
+document.addEventListener("webkitfullscreenchange", handleFullscreenChange); // For Safari
+document.addEventListener("mozfullscreenchange", handleFullscreenChange); // For Firefox
+document.addEventListener("MSFullscreenChange", handleFullscreenChange); // For IE/Edge
     </script>
-</body>
+  </body>
 </html>

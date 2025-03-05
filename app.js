@@ -70,7 +70,7 @@ app.post("/signup", (req, res) => {
           return res.status(500).send('<script>alert("An error occurred while inserting user."); window.location.href="/signup";</script>');
         }
         else{
-        alert("you have successfully signed up, please Login");
+        
         res.redirect("/login");
         }
       });
@@ -130,12 +130,14 @@ app.get("/class1-5", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "class1-5.htm"));
 });
 
-app.get("/class6-8", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "class6-8.htm"));
+app.get("/class6-10", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "class6-10.htm"));
 });
-
-app.get("/class9-12", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "class9-12.htm"));
+app.get("/summer", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "summer.htm"));
+});
+app.get("/class11-12", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "class11-12.htm"));
 });
 
 app.get("/grad", (req, res) => {

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuideAspire</title>
     <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
     <link rel="icon" href="Homepage1.png" type="image/png" />
     <script src="https://kit.fontawesome.com/19e8ada8de.js" crossorigin="anonymous"></script>
-    <script defer src="script.js"></script>
     <style>
         /* General Styles */
 body {
@@ -114,6 +114,7 @@ ul {
         opacity: 0;
     }
 }
+
 /* Main Content */
 .main-content {
     flex: 1;
@@ -222,6 +223,7 @@ iframe {
 .links-section button:hover, .links-section a:hover {
     background: #6a11cb;
 }
+
 /* Sidebar Styling */
 .sidenav {
             width: 200px;
@@ -303,7 +305,6 @@ iframe {
             transform: translateX(10px);
         }
 
-
     </style>
 </head>
 <body>
@@ -313,10 +314,9 @@ iframe {
             <a href="CourseSelect.htm" class="backsection"><i class="fa-solid fa-arrow-left"></i>  Go to LevelSelection</a>
              <h1 class="GuideHead">GuideAspire</h1>
             <ul>
-                <li class="class-item" data-class="13">First Year</li>
-                <li class="class-item" data-class="14">Second Year</li>
-                <li class="class-item" data-class="15">Third Year</li>
-                <li class="class-item" data-class="16">Final Year</li>
+                
+                <li class="class-item" data-class="11">Class 11</li>
+                <li class="class-item" data-class="12">Class 12</li>
                 
             </ul>
         </nav>
@@ -352,7 +352,7 @@ iframe {
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
     const daysContainer = document.getElementById("days-scroll");
     const videoFrame = document.getElementById("video-frame");
     const topicName = document.getElementById("topic-name");
@@ -363,31 +363,30 @@ iframe {
     const classItems = document.querySelectorAll(".class-item");
     const userEmail = localStorage.getItem("userEmail") || "guest";
     
-    let selectedClass = 13;
+    let selectedClass = 11;
     let selectedDay = 1;
     let progress = JSON.parse(localStorage.getItem(`progress_${userEmail}`)) || {};
 
     const topics = {
-        13: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
-        14: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
-        15: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
-        16: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
+        9: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
+        10: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
+        11: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
+        12: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
         
     };
 
     const exerciseLinks = {
-        13: ["https://exercise1.com", "https://exercise2.com"],
-        14: ["https://exercise3.com", "https://exercise4.com"],
-        15: ["https://exercise1.com", "https://exercise2.com"],
-        16: ["https://exercise3.com", "https://exercise4.com"]
-    
+        9: ["https://exercise1.com", "https://exercise2.com"],
+        10: ["https://exercise3.com", "https://exercise4.com"],
+        11: ["https://exercise1.com", "https://exercise2.com"],
+        12: ["https://exercise3.com", "https://exercise4.com"]
     };
 
     const projectLinks = {
-        13: ["https://project1.com", "https://project2.com"],
-        14: ["https://project3.com", "https://project4.com"],
-        15: ["https://exercise1.com", "https://exercise2.com"],
-        16: ["https://exercise3.com", "https://exercise4.com"]
+        9: ["https://project1.com", "https://project2.com"],
+        10: ["https://project3.com", "https://project4.com"],
+        11: ["https://exercise1.com", "https://exercise2.com"],
+        12: ["https://exercise3.com", "https://exercise4.com"]
     };
 
     function updateDays() {

@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuideAspire</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="Homepage1.png" type="image/png" />
+    <script src="https://kit.fontawesome.com/19e8ada8de.js" crossorigin="anonymous"></script>
     <script defer src="script.js"></script>
     <style>
         /* General Styles */
@@ -52,6 +54,66 @@ body {
 }
 .sidebar li:hover {
     background: rgba(255, 255, 255, 0.4);
+}
+
+/* General reset for list */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Base style for list items */
+.class-item {
+    padding: 15px 20px;
+    margin: 10px 0;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #333;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hover effect */
+.class-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+}
+
+/* Selected item style */
+.class-item.selected {
+    background: linear-gradient(145deg, #007bff, #005bb5);
+    color: white;
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Add a subtle animation for selection */
+.class-item.selected::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(1);
+        opacity: 0;
+    }
 }
 
 /* Main Content */
@@ -163,18 +225,102 @@ iframe {
     background: #6a11cb;
 }
 
+/* Sidebar Styling */
+.sidenav {
+            width: 200px;
+            background: linear-gradient(145deg, #2c3e50, #34495e);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Back Link Styling */
+        .backsection {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ecf0f1;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.4s ease;
+            font-size: 14px;
+            margin-bottom: 20px;
+            width: 100%;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .backsection i {
+            margin-right: 10px;
+            font-size: 12px;
+            transition: transform 0.4s ease;
+        }
+
+        .backsection:hover {
+            background-color: rgba(26, 188, 156, 0.8);
+            transform: translateX(10px);
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.3);
+        }
+
+        .backsection:hover i {
+            transform: translateX(-5px);
+        }
+
+        /* Guide Head Styling */
+        .GuideHead {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ecf0f1;
+            text-align: left;
+            margin-top: 10px;
+            padding: 10px 0;
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .GuideHead::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #1abc9c, #3498db);
+            bottom: 0;
+            left: -100%;
+            transition: left 0.5s ease;
+        }
+
+        .GuideHead:hover::before {
+            left: 0;
+        }
+
+        .GuideHead span {
+            display: inline-block;
+            transition: transform 0.4s ease;
+        }
+
+        .GuideHead:hover span {
+            transform: translateX(10px);
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Left Navigation -->
         <nav class="sidebar">
+            <a href="CourseSelect.htm" class="backsection"><i class="fa-solid fa-arrow-left"></i>  Go to LevelSelection</a>
+             <h1 class="GuideHead">GuideAspire</h1>
             <ul>
-                <li class="class-item" data-class="1">Class 1</li>
-                <li class="class-item" data-class="2">Class 2</li>
-                <li class="class-item" data-class="3">Class 3</li>
-                <li class="class-item" data-class="4">Class 4</li>
-                <li class="class-item" data-class="5">Class 5</li>
+                <li class="class-item" data-class="6">Class 6</li>
+                <li class="class-item" data-class="7">Class 7</li>
+                <li class="class-item" data-class="8">Class 8</li>
+                <li class="class-item" data-class="9">Class 9</li>
+                <li class="class-item" data-class="10">Class 10</li>
+                
             </ul>
         </nav>
         
@@ -209,7 +355,7 @@ iframe {
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     const daysContainer = document.getElementById("days-scroll");
     const videoFrame = document.getElementById("video-frame");
     const topicName = document.getElementById("topic-name");
@@ -220,26 +366,27 @@ iframe {
     const classItems = document.querySelectorAll(".class-item");
     const userEmail = localStorage.getItem("userEmail") || "guest";
     
-    let selectedClass = 1;
+    let selectedClass = 6;
     let selectedDay = 1;
     let progress = JSON.parse(localStorage.getItem(`progress_${userEmail}`)) || {};
 
     const topics = {
-        1: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
-        2: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
-        3: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
-        4: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
-        5: ["Advanced Algebra", "Trigonometry", "Probability", "Statistics", "Logical Reasoning"]
+        6: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
+        7: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
+        8: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
+       
     };
 
     const exerciseLinks = {
-        1: ["https://exercise1.com", "https://exercise2.com"],
-        2: ["https://exercise3.com", "https://exercise4.com"]
+        6: ["https://exercise1.com", "https://exercise2.com"],
+        7: ["https://exercise3.com", "https://exercise4.com"],
+        8: ["https://exercise3.com", "https://exercise4.com"]
     };
 
     const projectLinks = {
-        1: ["https://project1.com", "https://project2.com"],
-        2: ["https://project3.com", "https://project4.com"]
+        6: ["https://project1.com", "https://project2.com"],
+        7: ["https://project3.com", "https://project4.com"],
+        8: ["https://project3.com", "https://project4.com"]
     };
 
     function updateDays() {
@@ -315,7 +462,22 @@ iframe {
     loadDay(1);
 });
 
+// code for stylings change of side class list
+document.querySelectorAll('.class-item').forEach(item => {
+    item.addEventListener('click', function() {
+        // Remove the 'selected' class from all items
+        document.querySelectorAll('.class-item').forEach(innerItem => {
+            innerItem.classList.remove('selected');
+        });
 
+        // Add the 'selected' class to the clicked item
+        this.classList.add('selected');
+
+        // Log the selected item's data-class attribute
+        const selectedClass = this.getAttribute('data-class');
+        console.log('Selected Class:', selectedClass);
+    });
+});
     </script>
 </body>
 </html>

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuideAspire</title>
     <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
     <link rel="icon" href="Homepage1.png" type="image/png" />
     <script src="https://kit.fontawesome.com/19e8ada8de.js" crossorigin="anonymous"></script>
-    <script defer src="script.js"></script>
     <style>
         /* General Styles */
 body {
@@ -101,7 +101,7 @@ ul {
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.1);
-    animation: ripple 0.6s ease-out;
+    animation: ripple 0.8s ease-out;
 }
 
 @keyframes ripple {
@@ -222,8 +222,9 @@ iframe {
 .links-section button:hover, .links-section a:hover {
     background: #6a11cb;
 }
-/* Sidebar Styling */
-.sidenav {
+
+  /* Sidebar Styling */
+  .sidenav {
             width: 200px;
             background: linear-gradient(145deg, #2c3e50, #34495e);
             padding: 20px;
@@ -303,20 +304,19 @@ iframe {
             transform: translateX(10px);
         }
 
-
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Left Navigation -->
+         
         <nav class="sidebar">
-            <a href="CourseSelect.htm" class="backsection"><i class="fa-solid fa-arrow-left"></i>  Go to LevelSelection</a>
-             <h1 class="GuideHead">GuideAspire</h1>
+            
+                <a href="CourseSelect.htm" class="backsection"><i class="fa-solid fa-arrow-left"></i>  Go to LevelSelection</a>
+                <h1 class="GuideHead">GuideAspire</h1>
+            
             <ul>
-                <li class="class-item" data-class="13">First Year</li>
-                <li class="class-item" data-class="14">Second Year</li>
-                <li class="class-item" data-class="15">Third Year</li>
-                <li class="class-item" data-class="16">Final Year</li>
+                <li class="class-item" data-class="1">Summer Special</li>
                 
             </ul>
         </nav>
@@ -352,7 +352,8 @@ iframe {
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
+        
+document.addEventListener("DOMContentLoaded", function () {
     const daysContainer = document.getElementById("days-scroll");
     const videoFrame = document.getElementById("video-frame");
     const topicName = document.getElementById("topic-name");
@@ -361,44 +362,57 @@ iframe {
     const completeBtn = document.getElementById("complete-btn");
     const languageSelect = document.getElementById("language-select");
     const classItems = document.querySelectorAll(".class-item");
-    const userEmail = localStorage.getItem("userEmail") || "guest";
-    
-    let selectedClass = 13;
+    const userEmail = localStorage.getItem("userEmail"); // Ensure this is set during login
+
+    if (!userEmail) {
+        alert("Please log in to track your progress.");
+        window.location.href = "/login";
+        return;
+    }
+
+    let selectedClass = 1;
     let selectedDay = 1;
-    let progress = JSON.parse(localStorage.getItem(`progress_${userEmail}`)) || {};
+    let progress = {};
 
     const topics = {
-        13: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
-        14: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
-        15: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
-        16: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
-        
+        1: ["Introduction to Learning", "Basic Shapes", "Numbers", "Alphabet", "Colors"],
+        2: ["Patterns", "Addition", "Subtraction", "Time", "Money"],
+        3: ["Multiplication", "Division", "Measurement", "Fractions", "Graphs"],
+        4: ["Decimals", "Percentages", "Geometry", "Algebra", "Equations"],
+        5: ["Advanced Algebra", "Trigonometry", "Probability", "Statistics", "Logical Reasoning"]
     };
 
     const exerciseLinks = {
-        13: ["https://exercise1.com", "https://exercise2.com"],
-        14: ["https://exercise3.com", "https://exercise4.com"],
-        15: ["https://exercise1.com", "https://exercise2.com"],
-        16: ["https://exercise3.com", "https://exercise4.com"]
-    
+        1: ["https://exercise1.com", "https://exercise2.com"],
+        2: ["https://exercise3.com", "https://exercise4.com"]
     };
 
     const projectLinks = {
-        13: ["https://project1.com", "https://project2.com"],
-        14: ["https://project3.com", "https://project4.com"],
-        15: ["https://exercise1.com", "https://exercise2.com"],
-        16: ["https://exercise3.com", "https://exercise4.com"]
+        1: ["https://project1.com", "https://project2.com"],
+        2: ["https://project3.com", "https://project4.com"]
     };
+
+    // Fetch progress from the database
+    async function fetchProgress() {
+        try {
+            const response = await fetch(`/progress/${userEmail}/${selectedClass}`);
+            const completedDays = await response.json();
+            progress[selectedClass] = completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
+            updateDays();
+        } catch (error) {
+            console.error("Error fetching progress:", error);
+        }
+    }
 
     function updateDays() {
         daysContainer.innerHTML = "";
         let currentProgress = progress[selectedClass] || 1; // Ensure day 1 is always unlocked
-    
-        for (let i = 1; i <= 50; i++) {
+
+        for (let i = 1; i <= 20; i++) {
             const day = document.createElement("div");
             day.classList.add("day-item");
             day.textContent = `Day ${i}`;
-    
+
             if (i < currentProgress) {
                 day.classList.add("completed");
                 day.innerHTML += " ⭐";
@@ -407,17 +421,16 @@ iframe {
             } else {
                 day.classList.add("locked");
             }
-    
+
             day.addEventListener("click", () => {
                 if (!day.classList.contains("locked")) {
                     loadDay(i);
                 }
             });
-    
+
             daysContainer.appendChild(day);
         }
     }
-    
 
     function loadDay(day) {
         selectedDay = day;
@@ -431,26 +444,33 @@ iframe {
         const lang = languageSelect.value;
         const baseURL = "https://www.youtube.com/embed/";
         const videoIDs = {
-            english: ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY"], 
-            telugu: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"] 
+            english: ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY"],
+            telugu: ["rYEDA3JcQqw", "kJQP7kiw5Fk", "vTIIMJ9tUc8"]
         };
         return `${baseURL}${videoIDs[lang][(classNum + dayNum) % videoIDs[lang].length]}`;
     }
 
-   completeBtn.addEventListener("click", function () {
-    if (!progress[selectedClass] || progress[selectedClass] < selectedDay + 1) {
-        progress[selectedClass] = selectedDay + 1;
-        localStorage.setItem(`progress_${userEmail}`, JSON.stringify(progress));
-        updateDays();
-    }
-});
-
+    completeBtn.addEventListener("click", async function () {
+        if (!progress[selectedClass] || progress[selectedClass] < selectedDay + 1) {
+            progress[selectedClass] = selectedDay + 1;
+            try {
+                await fetch('/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail, classNumber: selectedClass, dayNumber: selectedDay })
+                });
+                updateDays();
+            } catch (error) {
+                console.error("Error saving progress:", error);
+            }
+        }
+    });
 
     classItems.forEach(item => {
         item.addEventListener("click", function () {
             selectedClass = parseInt(this.getAttribute("data-class"));
-            selectedDay = 1; 
-            updateDays();
+            selectedDay = 1;
+            fetchProgress();
             loadDay(1);
         });
     });
@@ -459,7 +479,7 @@ iframe {
         loadDay(selectedDay);
     });
 
-    updateDays();
+    fetchProgress();
     loadDay(1);
 });
 
@@ -479,7 +499,6 @@ document.querySelectorAll('.class-item').forEach(item => {
         console.log('Selected Class:', selectedClass);
     });
 });
-
     </script>
 </body>
 </html>
