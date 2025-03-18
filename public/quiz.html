@@ -1,242 +1,449 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Quiz App</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1"></script>
   <style>
-    /* Quiz Page Styles */
+    /* General Styles */
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #6a11cb, #2575fc);
-      color: white;
+      color: #fff;
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      overflow: hidden;
     }
 
-    .quiz-container {
+    .container {
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
-      border-radius: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
       padding: 30px;
-      width: 90%;
       max-width: 600px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 90%;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     h1 {
       font-size: 2rem;
       margin-bottom: 20px;
-      animation: fadeIn 1s ease-in-out;
     }
 
-    .question {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-      animation: slideIn 0.5s ease-in-out;
-    }
-
-    .question p {
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-    }
-
-    .question input,
-    .question select,
-    .question textarea {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
+    p {
       font-size: 1rem;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
-    .question button {
+    button {
       background: #ff6f61;
-      color: white;
+      color: #fff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 12px 24px;
+      border-radius: 25px;
       cursor: pointer;
       font-size: 1rem;
-      transition: background 0.3s ease;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
-    .question button:hover {
+    button:hover {
       background: #ff3b2f;
+      transform: scale(1.05);
     }
 
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 5px;
-      margin-bottom: 20px;
-      overflow: hidden;
+    .hidden {
+      display: none;
     }
 
-    .progress {
-      height: 100%;
-      background: #ff6f61;
-      width: 0;
-      transition: width 0.5s ease;
+    /* Instructions Section */
+    #instructions ul {
+      list-style: none;
+      padding: 0;
     }
 
-    .feedback {
-      margin-top: 15px;
-      font-weight: bold;
+    #instructions li {
+      margin: 10px 0;
     }
 
-    .timer {
+    /* Quiz Section */
+    #quiz {
+      position: relative;
+    }
+
+    #timer {
       font-size: 1.2rem;
       margin-bottom: 20px;
     }
 
-    .badges {
+    #questionContainer {
+      margin-bottom: 20px;
+    }
+
+    #question {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #options button {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #options button.selected {
+      background: rgba(255, 99, 132, 0.6);
+      border-color: rgba(255, 99, 132, 0.8);
+    }
+
+    #options button:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(1.02);
+    }
+
+    /* Results Section */
+    #results {
+      text-align: center;
+    }
+
+    #score {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #ff6f61;
+    }
+
+    #rewardMessage {
+      font-size: 1.5rem;
       margin-top: 20px;
     }
 
-    .badge {
-      display: inline-block;
+    /* Previous Attempts */
+    #previousAttempts {
+      margin-top: 30px;
+    }
+
+    #attemptsChart {
+      margin-top: 20px;
+    }
+
+    /* Animations */
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .balloon, .paper {
+      position: absolute;
+      animation: float 6s infinite;
+    }
+
+    .balloon {
+      width: 80px;
+      height: 100px;
       background: #ff6f61;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 20px;
-      margin: 5px;
-      font-size: 0.9rem;
-      animation: bounce 0.5s ease-in-out;
+      border-radius: 50%;
+      clip-path: polygon(50% 0%, 80% 20%, 100% 50%, 80% 80%, 50% 100%, 20% 80%, 0% 50%, 20% 20%);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .paper {
+      width: 50px;
+      height: 50px;
+      background: #fff;
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
     }
 
-    @keyframes slideIn {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="quiz-container">
-    <h1>Quiz</h1>
-    <div class="timer" id="timer">Time Left: 30s</div>
-    <div class="progress-bar">
-      <div class="progress" id="progress"></div>
+  <div class="container">
+    <!-- Instructions Section -->
+    <div id="instructions" class="section active">
+      <h1>Quiz Instructions</h1>
+      <p>Welcome to the quiz! Here are the rules:</p>
+      <ul>
+        <li>Total questions: 10</li>
+        <li>Time per question: 1 minute</li>
+        <li>You cannot go back to previous questions.</li>
+      </ul>
+      <button id="startQuizBtn">Start Quiz</button>
+      <div id="previousAttempts">
+        <h2>Previous Attempts</h2>
+        <p id="noAttemptsMessage">No quiz attempts yet.</p>
+        <canvas id="attemptsChart" width="400" height="200"></canvas>
+      </div>
     </div>
-    <div id="quiz-content"></div>
-    <div id="feedback" class="feedback"></div>
-    <div class="badges" id="badges"></div>
+
+    <!-- Quiz Section -->
+    <div id="quiz" class="section hidden">
+      <h1>Quiz</h1>
+      <div id="timer">Time Left: <span id="time">60</span>s</div>
+      <div id="questionContainer">
+        <p id="question"></p>
+        <div id="options"></div>
+      </div>
+      <button id="nextBtn">Next</button>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="section hidden">
+      <h1>Quiz Results</h1>
+      <p>Your score: <span id="score"></span>/10</p>
+      <p id="rewardMessage"></p>
+      <button id="restartQuizBtn">Restart Quiz</button>
+    </div>
   </div>
-  <script src="data.js"></script>
+
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const classId = urlParams.get('class');
-    const dayId = urlParams.get('day');
+    const currentClass = urlParams.get('class') || 1;
+    const currentDay = urlParams.get('day') || 1;
 
-    const quizContent = document.getElementById("quiz-content");
-    const progressBar = document.getElementById("progress");
-    const feedback = document.getElementById("feedback");
-    const timerDisplay = document.getElementById("timer");
-    const badgesContainer = document.getElementById("badges");
+    const instructionsSection = document.getElementById('instructions');
+    const quizSection = document.getElementById('quiz');
+    const resultsSection = document.getElementById('results');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const restartQuizBtn = document.getElementById('restartQuizBtn');
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const timerElement = document.getElementById('time');
+    const scoreElement = document.getElementById('score');
+    const rewardMessage = document.getElementById('rewardMessage');
+    const noAttemptsMessage = document.getElementById('noAttemptsMessage');
+    const attemptsChart = document.getElementById('attemptsChart').getContext('2d');
 
-    const currentClass = classes.find(c => c.classId == classId);
-    const currentDay = currentClass.days.find(d => d.dayId == dayId);
-
-    let currentQuestion = 0;
+    let currentQuestionIndex = 0;
     let score = 0;
-    let timeLeft = 30;
+    let timeLeft = 60;
     let timer;
+    let selectedOption = null;
+    let attempts = [];
 
+    // Sample Questions
+    const questions = [
+      { question: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Madrid"], answer: "Paris" },
+      { question: "Which planet is known as the Red Planet?", options: ["Earth", "Mars", "Jupiter", "Saturn"], answer: "Mars" },
+      { question: "Who wrote 'Romeo and Juliet'?", options: ["William Shakespeare", "Charles Dickens", "Mark Twain", "Jane Austen"], answer: "William Shakespeare" },
+      { question: "What is the largest ocean on Earth?", options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], answer: "Pacific Ocean" },
+      { question: "What is the chemical symbol for water?", options: ["H2O", "CO2", "NaCl", "O2"], answer: "H2O" },
+      { question: "Which country is known as the Land of the Rising Sun?", options: ["China", "Japan", "South Korea", "Thailand"], answer: "Japan" },
+      { question: "What is the smallest prime number?", options: ["1", "2", "3", "5"], answer: "2" },
+      { question: "Who painted the Mona Lisa?", options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"], answer: "Leonardo da Vinci" },
+      { question: "What is the largest mammal in the world?", options: ["Elephant", "Blue Whale", "Giraffe", "Shark"], answer: "Blue Whale" },
+      { question: "Which element has the atomic number 1?", options: ["Helium", "Hydrogen", "Oxygen", "Carbon"], answer: "Hydrogen" }
+    ];
+
+    // Start Quiz
+    startQuizBtn.addEventListener('click', () => {
+      instructionsSection.classList.add('hidden');
+      quizSection.classList.remove('hidden');
+      loadQuestion();
+      startTimer();
+    });
+
+    // Load Question
+    function loadQuestion() {
+      const currentQuestion = questions[currentQuestionIndex];
+      questionElement.textContent = currentQuestion.question;
+      optionsElement.innerHTML = '';
+      currentQuestion.options.forEach(option => {
+        const button = document.createElement('button');
+        button.textContent = option;
+        button.addEventListener('click', () => selectAnswer(option, button));
+        optionsElement.appendChild(button);
+      });
+      selectedOption = null;
+    }
+
+    // Select Answer
+    function selectAnswer(option, button) {
+      document.querySelectorAll('#options button').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+      selectedOption = option;
+    }
+
+    // Next Button
+    nextBtn.addEventListener('click', () => {
+      if (!selectedOption) return; // Require an answer
+      const currentQuestion = questions[currentQuestionIndex];
+      if (selectedOption === currentQuestion.answer) {
+        score++;
+      }
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+        resetTimer();
+      } else {
+        endQuiz();
+      }
+    });
+
+    // Timer
     function startTimer() {
       timer = setInterval(() => {
         timeLeft--;
-        timerDisplay.textContent = `Time Left: ${timeLeft}s`;
-        if (timeLeft === 0) {
+        timerElement.textContent = timeLeft;
+        if (timeLeft <= 0) {
           clearInterval(timer);
-          endQuiz();
+          currentQuestionIndex++;
+          if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+            resetTimer();
+          } else {
+            endQuiz();
+          }
         }
       }, 1000);
     }
 
-    function loadQuestion() {
-      if (currentDay && currentDay.quiz && currentQuestion < currentDay.quiz.length) {
-        const q = currentDay.quiz[currentQuestion];
-        quizContent.innerHTML = `
-          <div class="question">
-            <p>${q.question}</p>
-            ${q.type === "mcq" ? `
-              <select id="answer">
-                ${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-              </select>
-            ` : q.type === "fill-in-the-blank" ? `
-              <input type="text" id="answer" placeholder="Your answer">
-            ` : q.type === "true-false" ? `
-              <label><input type="radio" name="answer" value="true"> True</label>
-              <label><input type="radio" name="answer" value="false"> False</label>
-            ` : `
-              <textarea id="answer" placeholder="Your answer"></textarea>
-            `}
-            <button onclick="checkAnswer()">Next</button>
-          </div>
-        `;
-        progressBar.style.width = `${((currentQuestion + 1) / currentDay.quiz.length) * 100}%`;
-      } else {
-        endQuiz();
-      }
+    function resetTimer() {
+      clearInterval(timer);
+      timeLeft = 60;
+      timerElement.textContent = timeLeft;
+      startTimer();
     }
 
-    function checkAnswer() {
-      const userAnswer = document.getElementById("answer").value;
-      const correctAnswer = currentDay.quiz[currentQuestion].answer;
-      if (userAnswer === correctAnswer) {
-        score++;
-        feedback.textContent = "Correct!";
-      } else {
-        feedback.textContent = `Incorrect. The correct answer is ${correctAnswer}.`;
-      }
-      currentQuestion++;
-      loadQuestion();
-    }
-
+    // End Quiz
     function endQuiz() {
       clearInterval(timer);
-      quizContent.innerHTML = `
-        <div class="question">
-          <p>Quiz completed! Your score is ${score} out of ${currentDay.quiz.length}.</p>
-        </div>
-      `;
-      awardBadges();
+      quizSection.classList.add('hidden');
+      resultsSection.classList.remove('hidden');
+      scoreElement.textContent = score;
+
+      // Reward Message
+      if (score >= 8) {
+        rewardMessage.textContent = "🎉 Congratulations! You're a genius! 🎉";
+      } else if (score >= 5) {
+        rewardMessage.textContent = "👍 Well done! Keep improving! 👍";
+      } else {
+        rewardMessage.textContent = "😅 Better luck next time! 😅";
+      }
+
+      // Save Attempt
+      saveAttempt(score);
+
+      // Confetti Animation
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
     }
 
-    function awardBadges() {
-      if (score === currentDay.quiz.length) {
-        badgesContainer.innerHTML = `<div class="badge">Perfect Score! 🏆</div>`;
-      } else if (score >= currentDay.quiz.length * 0.8) {
-        badgesContainer.innerHTML = `<div class="badge">Great Job! 🌟</div>`;
-      } else {
-        badgesContainer.innerHTML = `<div class="badge">Keep Trying! 💪</div>`;
+    // Save Attempt to Database
+    async function saveAttempt(score) {
+      const userEmail = "user@example.com"; // Replace with actual user email
+      const response = await fetch('/saveAttempt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userEmail,
+          class: currentClass,
+          day: currentDay,
+          score
+        }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        fetchPreviousAttempts();
       }
     }
 
-    startTimer();
-    loadQuestion();
+    // Fetch Previous Attempts from Database
+    async function fetchPreviousAttempts() {
+      const userEmail = "user@example.com"; // Replace with actual user email
+      const response = await fetch(`/getAttempts?userEmail=${userEmail}&class=${currentClass}&day=${currentDay}`);
+      const data = await response.json();
+      attempts = data.attempts;
+      updateChart();
+    }
+
+    // Update Chart with Last 3 Attempts
+    function updateChart() {
+      if (attempts.length === 0) {
+        noAttemptsMessage.textContent = "No quiz attempts yet.";
+        return;
+      }
+      noAttemptsMessage.textContent = "";
+
+      if (window.myChart) {
+        window.myChart.destroy();
+      }
+
+      window.myChart = new Chart(attemptsChart, {
+        type: 'bar',
+        data: {
+          labels: attempts.map((_, index) => `Attempt ${index + 1}`),
+          datasets: [{
+            label: 'Score',
+            data: attempts,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 10
+            }
+          }
+        }
+      });
+    }
+
+    // Restart Quiz
+    restartQuizBtn.addEventListener('click', () => {
+      resultsSection.classList.add('hidden');
+      instructionsSection.classList.remove('hidden');
+      currentQuestionIndex = 0;
+      score = 0;
+      timeLeft = 60;
+      timerElement.textContent = timeLeft;
+      selectedOption = null;
+      fetchPreviousAttempts();
+    });
+
+    // Initialize on page load
+    fetchPreviousAttempts();
   </script>
 </body>
 </html>

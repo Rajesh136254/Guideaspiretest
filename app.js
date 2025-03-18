@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const path = require("path");
-
+const multer = require("multer");
 const app = express();
 
 // Middleware
@@ -205,11 +205,7 @@ app.post('/progress', async (req, res) => {
   });
 });
 
-// Start the server
-const PORT = 4000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+
 
 
 
@@ -243,4 +239,159 @@ app.post("/forgot-password", async (req, res) => {
           res.json({ success: true });
       });
   });
+});
+
+
+// API to submit poll feedback
+app.post('/submit-poll', (req, res) => {
+  const { voteType, reason } = req.body;
+
+  const query = 'INSERT INTO poll_feedback (vote_type, reason) VALUES (?, ?)';
+  db.query(query, [voteType, reason], (err, result) => {
+    if (err) throw err;
+    res.send({ message: 'Feedback submitted successfully!' });
+  });
+});
+
+// API to fetch poll counts
+app.get('/poll-counts', (req, res) => {
+  const query = `
+    SELECT 
+      SUM(CASE WHEN vote_type = 'like' THEN 1 ELSE 0 END) AS likeCount,
+      SUM(CASE WHEN vote_type = 'dislike' THEN 1 ELSE 0 END) AS dislikeCount
+    FROM poll_feedback
+  `;
+  db.query(query, (err, result) => {
+    if (err) throw err;
+    res.send(result[0]);
+  });
+});
+
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+
+// JWT secret
+const JWT_SECRET = "your_jwt_secret";
+
+// Middleware to verify JWT
+const authenticateUser = (req, res, next) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ message: "Access denied" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(400).json({ message: "Invalid token" });
+  }
+};
+
+// Signup endpoint
+app.post("/signup", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Insert user into database
+  const query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+  db.query(query, [name, email, hashedPassword], (err, result) => {
+    if (err) return res.status(400).json({ message: "Email already exists" });
+
+    // Generate JWT
+    const token = jwt.sign({ id: result.insertId, email }, JWT_SECRET);
+    res.status(201).json({ token });
+  });
+});
+
+// Login endpoint
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  // Find user by email
+  const query = "SELECT * FROM users WHERE email = ?";
+  db.query(query, [email], async (err, results) => {
+    if (err || results.length === 0)
+      return res.status(400).json({ message: "Invalid email or password" });
+
+    const user = results[0];
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid email or password" });
+
+    // Generate JWT
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email, profile_photo: user.profile_photo } });
+  });
+});
+
+
+
+
+
+// Signup endpoint
+// Signup endpoint
+app.post("/signup", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert user into database
+    const query = "INSERT INTO users_profile (name, email, password) VALUES (?, ?, ?)";
+    db.query(query, [name, email, hashedPassword], (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(400).json({ message: "Email already exists" });
+      }
+
+      // Generate JWT
+      const token = jwt.sign({ id: result.insertId, email }, JWT_SECRET);
+      res.status(201).json({ token });
+    });
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+// Fetch user profile
+app.get("/profile", (req, res) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ message: "Access denied" });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const query = "SELECT name, email, profile_photo FROM users_profile WHERE id = ?";
+    db.query(query, [decoded.id], (err, results) => {
+      if (err || results.length === 0)
+        return res.status(404).json({ message: "User not found" });
+
+      res.json(results[0]);
+    });
+  } catch (err) {
+    res.status(400).json({ message: "Invalid token" });
+  }
+});
+
+// Serve uploaded files
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Start the server
+const PORT = 4000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

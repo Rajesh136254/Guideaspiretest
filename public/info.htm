@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GuideAspire - Your Path to Success</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"> 
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Navigation Bar */
+    nav {
+      background-color: #2c3e50;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #1abc9c;
+    }
+
+    /* Section Styles */
+    section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #1abc9c;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #555;
+      text-align: justify;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #1abc9c;
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      text-align: center;
+    }
+
+    .cta-button:hover {
+      background-color: #16a085;
+    }
+
+    /* About Section */
+    #about {
+      background-color: #fff;
+      border-bottom: 2px solid #eee;
+    }
+
+    /* Courses Section */
+    #courses {
+      background-color: #fff;
+      border-bottom: 2px solid #eee;
+    }
+
+    .course-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .course-card {
+      flex: 1 1 300px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .course-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .course-card-content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .course-card h3 {
+      font-size: 24px;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .course-card p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .course-card ul {
+      list-style-type: none;
+      padding: 0;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .course-card ul li {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .course-card ul li::before {
+      content: "✔";
+      color: #1abc9c;
+      margin-right: 10px;
+    }
+
+    .course-card a {
+      display: block;
+      text-align: center;
+      padding: 10px;
+      background-color: #1abc9c;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .course-card a:hover {
+      background-color: #16a085;
+    }
+
+    /* Key Features Section */
+    #features {
+      background-color: #fff;
+      border-bottom: 2px solid #eee;
+    }
+
+    .feature-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .feature-card {
+      flex: 1 1 300px;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card i {
+      font-size: 40px;
+      color: #1abc9c;
+      margin-bottom: 15px;
+    }
+
+    .feature-card h3 {
+      font-size: 20px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    /* Testimonials Section */
+    #testimonials {
+      background-color: #f9f9f9;
+      border-bottom: 2px solid #eee;
+    }
+
+    .testimonial-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .testimonial-card {
+      flex: 1 1 300px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .testimonial-card p {
+      font-style: italic;
+      color: #555;
+    }
+
+    .testimonial-card p:last-child {
+      font-weight: bold;
+      color: #1abc9c;
+    }
+
+    /* Contact Section */
+    #contact {
+      background-color: #fff;
+      border-bottom: 2px solid #eee;
+    }
+
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .contact-form button {
+      width: 100%;
+      padding: 12px;
+      background-color: #1abc9c;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      background-color: #16a085;
+    }
+
+    /* Privacy Policy and Terms Sections */
+    #privacy,
+    #terms {
+      background-color: #f9f9f9;
+      border-bottom: 2px solid #eee;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #2c3e50;
+      color: #ecf0f1;
+    }
+
+    footer a {
+      color: #1abc9c;
+      text-decoration: none;
+      
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 24px;
+      }
+      p {
+        font-size: 16px;
+      }
+      .course-card,
+      .feature-card,
+      .testimonial-card {
+        flex: 1 1 100%;
+      }
+    }
+
+  /* Section Styles */
+  section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #1abc9c;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #555;
+      text-align: justify;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .search-bar input {
+      width: 100%;
+      max-width: 600px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .search-bar input:focus {
+      border-color: #1abc9c;
+    }
+
+    /* FAQs Section */
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .faq-item:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: #f9f9f9;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .faq-question:hover {
+      background-color: #f1f1f1;
+    }
+
+    .faq-answer {
+      padding: 0 20px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 20px;
+      max-height: 500px; /* Adjust based on content */
+    }
+
+    .faq-item.active .faq-question {
+      background-color: #1abc9c;
+      color: #fff;
+    }
+
+    .faq-question::after {
+      content: "➕";
+      font-size: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.active .faq-question::after {
+      content: "➖";
+      transform: rotate(180deg);
+    }
+
+   
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 24px;
+      }
+      p {
+        font-size: 16px;
+      }
+      .faq-question {
+        font-size: 16px;
+      }
+    }
+
+    /* Advanced Button Styling - No interference with other classes */
+.home-link {
+            position: fixed; /* Fixed position */
+            top: 10px; /* Distance from the top */
+            right: 20px; /* Distance from the right */
+            padding: 8px 12px; /* Comfortable padding */
+            background-color: #1abc9c; /* Vibrant teal background */
+            color: #ffffff; /* White text */
+            text-decoration: none; /* Remove underline */
+            font-size: 16px; /* Readable font size */
+            font-weight: 600; /* Bold text */
+            border-radius: 30px; /* Fully rounded corners */
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3); /* Soft shadow */
+            transition: all 0.4s ease; /* Smooth transitions */
+            z-index: 1000; /* Ensure it's above other elements */
+            display: inline-flex; /* Flexbox for alignment */
+            align-items: center; /* Center icon and text vertically */
+            gap: 8px; /* Space between icon and text */
+            border: none; /* Remove default border */
+            cursor: pointer; /* Pointer cursor on hover */
+            overflow: hidden; /* Hide overflow for animation */
+        }
+
+        /* Hover Effect - Advanced Animation */
+        .home-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 70%);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.6s ease;
+            z-index: 0;
+        }
+
+        .home-link:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .home-link:hover {
+            background-color: #16a085; /* Darker teal on hover */
+            transform: translateY(-2px); /* Slight lift */
+            box-shadow: 0 6px 16px rgba(26, 188, 156, 0.4); /* Enhanced shadow */
+        }
+
+        .home-link:active {
+            transform: translateY(0); /* Reset lift on click */
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3); /* Reset shadow */
+        }
+
+        /* Icon Animation */
+        .home-link i {
+            font-size: 14px; /* Icon size */
+            transition: transform 0.4s ease; /* Smooth icon animation */
+        }
+
+        .home-link:hover i {
+            transform: translateX(5px); /* Move icon to the right on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .home-link {
+                padding: 10px 20px; /* Smaller padding for mobile */
+                font-size: 14px; /* Smaller font size for mobile */
+                top: 10px; /* Adjust top position for mobile */
+                right: 10px; /* Adjust right position for mobile */
+            }
+        }
+
+    .foot{
+        text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#courses">Courses</a></li>
+      <li><a href="#features">Key Features</a></li>
+      <li><a href="#testimonials">Testimonials</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#privacy">Privacy Policy</a></li>
+      <li><a href="#terms">Terms & Conditions</a></li>
+    </ul>
+  </nav>
+
+  <a href="GuideAspire.htm" class="home-link"><i class="fa-solid fa-house"></i>> Go to HOME</a>
+  <!-- About Section -->
+  <section id="about">
+    <h1>Why GuideAspire is Transforming Education and Careers?</h1>
+    <p>We’re bridging the gap between academics and employability by providing holistic guidance, practical skills, and career readiness for students from Class 1 to Graduation.</p>
+    <h2>The Problem We’re Solving</h2>
+    <p>12-16 years of education are not enough to secure even a ₹16,000/month job. This is because traditional academics focus only on helping students move to the next level of study, not on preparing them for jobs or careers.</p>
+    <p>Even uneducated individuals are succeeding with better business ideas and jobs, while educated students struggle with unemployment. This is due to a lack of guidance on skill development, career planning, and practical knowledge.</p>
+    <h2>Our Solution</h2>
+    <p>GuideAspire is here to change this narrative. We provide comprehensive guidance on skills, career selection, and life skills, ensuring every student is job-ready and life-ready.</p>
+    <p>We focus on practical learning, self-improvement, and holistic development, making students confident and capable of achieving their dreams.</p>
+    <a href="#courses" class="cta-button">Explore Courses</a>
+  </section>
+
+  <!-- Courses Section -->
+  <section id="courses">
+    <h1>Our Comprehensive Class-Wise Guidance Programs</h1>
+    <div class="course-cards">
+      <!-- Class 1-5 -->
+      <div class="course-card">
+        <img src="https://via.placeholder.com/400x200" alt="Class 1-5">
+        <div class="course-card-content">
+          <h3>Class 1-5: Building a Strong Foundation</h3>
+          <p>We focus on developing analytical, communication, creative, technology, and life skills through interactive videos, quizzes, and projects.</p>
+          <ul>
+            <li>Analytical and Logical Skills</li>
+            <li>Communication Skills</li>
+            <li>Creative Thinking</li>
+            <li>Technology Skills</li>
+            <li>Life Skills</li>
+          </ul>
+          <a href="#contact" class="cta-button">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Class 6-10 -->
+      <div class="course-card">
+        <img src="https://via.placeholder.com/400x200" alt="Class 6-10">
+        <div class="course-card-content">
+          <h3>Class 6-10: Preparing for a Bright Future</h3>
+          <p>Our program includes aptitude skills, general knowledge, goal setting, financial guidance, and branch selection after 10th.</p>
+          <ul>
+            <li>Aptitude Skills</li>
+            <li>General Knowledge</li>
+            <li>Goal Setting</li>
+            <li>Financial Guidance</li>
+            <li>Branch Selection</li>
+          </ul>
+          <a href="#contact" class="cta-button">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Class 11-12 -->
+      <div class="course-card">
+        <img src="https://via.placeholder.com/400x200" alt="Class 11-12">
+        <div class="course-card-content">
+          <h3>Class 11-12: Finalizing Your Career Path</h3>
+          <p>We provide guidance on graduation branch selection, job preparation, and essential skills for private and government jobs.</p>
+          <ul>
+            <li>Graduation Branch Selection</li>
+            <li>Job Preparation</li>
+            <li>Private & Government Jobs</li>
+          </ul>
+          <a href="#contact" class="cta-button">Learn More</a>
+        </div>
+      </div>
+
+      <!-- Graduation -->
+      <div class="course-card">
+        <img src="https://via.placeholder.com/400x200" alt="Graduation">
+        <div class="course-card-content">
+          <h3>Graduation: Becoming Job-Ready</h3>
+          <p>Our 4-year plan covers job-specific skills, interview preparation, and guidance on applying and referencing jobs.</p>
+          <ul>
+            <li>Job-Specific Skills</li>
+            <li>Interview Preparation</li>
+            <li>Applying & Referencing Jobs</li>
+          </ul>
+          <a href="#contact" class="cta-button">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Features Section -->
+  <section id="features">
+    <h1>What Makes GuideAspire the Best?</h1>
+    <div class="feature-cards">
+      <div class="feature-card">
+        <i>📹</i>
+        <h3>7-Day Sample Videos for Every Class</h3>
+      </div>
+      <div class="feature-card">
+        <i>📝</i>
+        <h3>Interactive Quizzes and Projects</h3>
+      </div>
+      <div class="feature-card">
+        <i>💬</i>
+        <h3>WhatsApp Doubt-Solving Groups</h3>
+      </div>
+      <div class="feature-card">
+        <i>🎥</i>
+        <h3>Weekly Live AMA Sessions</h3>
+      </div>
+      <div class="feature-card">
+        <i>📚</i>
+        <h3>Holistic Guidance on Academics, Skills, and Life</h3>
+      </div>
+      <div class="feature-card">
+        <i>🎯</i>
+        <h3>Focus on Reducing Unemployability</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials">
+    <h1>Success Stories from Our Students and Parents</h1>
+    <div class="testimonial-cards">
+      <div class="testimonial-card">
+        <p>"GuideAspire helped my child develop logical thinking and communication skills. Highly recommended!"</p>
+        <p>- Parent of Class 4 Student</p>
+      </div>
+      <div class="testimonial-card">
+        <p>"The career guidance I received in Class 12 was invaluable. I’m now confident about my future."</p>
+        <p>- Class 12 Student</p>
+      </div>
+      <div class="testimonial-card">
+        <p>"The WhatsApp groups and live sessions are amazing for clearing doubts. Great initiative!"</p>
+        <p>- Graduation Level Student</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h1>Let’s Connect and Transform Your Future!</h1>
+    <div class="contact-form">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <textarea placeholder="Your Message" rows="5" required></textarea>
+      <button type="submit">Send Message</button>
+    </div>
+  </section>
+
+  <!-- Privacy Policy Section -->
+  <section id="privacy">
+    <h1>Privacy Policy</h1>
+    <p>At GuideAspire, we are committed to protecting your privacy. This policy outlines how we collect, use, and safeguard your information.</p>
+    <h2>Information We Collect</h2>
+    <p>Name, email, phone number, and other details provided during signup or contact.</p>
+    <h2>How We Use Your Information</h2>
+    <p>To provide and improve our services. To communicate with you about courses, updates, and support.</p>
+    <h2>Data Security</h2>
+    <p>We use industry-standard security measures to protect your data.</p>
+    <h2>Third-Party Services</h2>
+    <p>We do not share your information with third parties without your consent.</p>
+    <h2>Your Rights</h2>
+    <p>You can request access, correction, or deletion of your data at any time.</p>
+  </section>
+
+  <!-- Terms & Conditions Section -->
+  <section id="terms">
+    <h1>Terms & Conditions</h1>
+    <p>By using GuideAspire, you agree to these terms and conditions. Please read them carefully.</p>
+    <h2>Eligibility</h2>
+    <p>Our services are available to students and parents aged 13 and above.</p>
+    <h2>Account Responsibility</h2>
+    <p>You are responsible for maintaining the confidentiality of your account.</p>
+    <h2>Content Usage</h2>
+    <p>All course materials, videos, and resources are for personal use only.</p>
+    <h2>Payment and Refunds</h2>
+    <p>Details about payment methods, subscription plans, and refund policies.</p>
+    <h2>Termination</h2>
+    <p>We reserve the right to terminate accounts for violations of these terms.</p>
+    <h2>Changes to Terms</h2>
+    <p>We may update these terms periodically. Continued use constitutes acceptance.</p>
+  </section>
+
+
+
+  <!-- FAQs Section -->
+  <section id="faqs">
+    <h1>Frequently Asked Questions</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Search FAQs..." id="searchInput">
+    </div>
+    <div class="faq-container">
+      <!-- FAQ 1 -->
+      <div class="faq-item">
+        <div class="faq-question">What is GuideAspire?</div>
+        <div class="faq-answer">
+          <p>GuideAspire is a platform that empowers students with essential skills for academic and career success. We provide guidance on logical thinking, analytical skills, entrepreneurship, and more.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="faq-item">
+        <div class="faq-question">How can I join GuideAspire?</div>
+        <div class="faq-answer">
+          <p>You can join GuideAspire by signing up on our platform. Click on the "Sign Up" button on the homepage and follow the instructions to create your account.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="faq-item">
+        <div class="faq-question">What courses are available?</div>
+        <div class="faq-answer">
+          <p>We offer courses for students from Class 1 to Graduation. These include logical thinking, analytical skills, entrepreneurship, career readiness, and more.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 4 -->
+      <div class="faq-item">
+        <div class="faq-question">Is GuideAspire free?</div>
+        <div class="faq-answer">
+          <p>Yes, GuideAspire offers free resources and courses. However, we may introduce premium features in the future.</p>
+        </div>
+      </div>
+
+      <!-- FAQ 5 -->
+      <div class="faq-item">
+        <div class="faq-question">How can I contact support?</div>
+        <div class="faq-answer">
+          <p>You can contact our support team by filling out the contact form on the "Contact Us" page or emailing us at support@guideaspire.com.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <script>
+    // JavaScript for FAQs
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    faqItems.forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+
+    // JavaScript for Search Bar
+    const searchInput = document.getElementById('searchInput');
+    const faqQuestions = document.querySelectorAll('.faq-question');
+
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+
+      faqQuestions.forEach(question => {
+        const questionText = question.textContent.toLowerCase();
+        const faqItem = question.parentElement;
+
+        if (questionText.includes(searchTerm)) {
+          faqItem.style.display = 'block';
+        } else {
+          faqItem.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+  <!-- Footer -->
+  <footer>
+    <p class="foot">&copy; 2023 GuideAspire. All Rights Reserved. | <a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms & Conditions</a></p>
+  </footer>
+</body>
+</html>
