@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <link rel="icon" type="image/png" sizes="32x32" href="Homepage.png">
     <style>
-        /* General Styles */
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -21,7 +20,6 @@
             position: relative;
         }
 
-        /* Dynamic Background Animation */
         body::before {
             content: '';
             position: absolute;
@@ -36,15 +34,10 @@
         }
 
         @keyframes moveBackground {
-            from {
-                background-position: 0 0;
-            }
-            to {
-                background-position: 100% 100%;
-            }
+            from { background-position: 0 0; }
+            to { background-position: 100% 100%; }
         }
 
-        /* Auth Container */
         .auth-container {
             background: rgba(255, 255, 255, 0.1);
             padding: 40px;
@@ -58,12 +51,8 @@
         }
 
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .auth-container h2 {
@@ -73,7 +62,6 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* Form Styles */
         form {
             display: flex;
             flex-direction: column;
@@ -107,7 +95,6 @@
             outline: none;
         }
 
-        /* Button Styles */
         .btn {
             padding: 12px;
             border: none;
@@ -128,7 +115,6 @@
             transform: translateY(-3px);
         }
 
-        /* Login/Signup Link */
         .loginsign {
             margin-top: 20px;
             font-size: 14px;
@@ -146,7 +132,6 @@
             color: #4facfe;
         }
 
-        /* Forgot Password Link */
         .forgot-password {
             margin-top: 10px;
             font-size: 14px;
@@ -164,27 +149,18 @@
             color: #4facfe;
         }
 
-        /* Responsive Design */
         @media (max-width: 480px) {
             .auth-container {
                 padding: 20px;
                 width: 90%;
             }
-
             .auth-container h2 {
                 font-size: 24px;
             }
-
-            input {
+            input, .btn {
                 padding: 10px;
                 font-size: 14px;
             }
-
-            .btn {
-                padding: 10px;
-                font-size: 14px;
-            }
-
             .loginsign, .forgot-password {
                 font-size: 12px;
             }
@@ -192,10 +168,9 @@
     </style>
 </head>
 <body>
-    <!-- Auth Container -->
     <div class="auth-container" id="authContainer">
         <h2 id="formTitle">Sign Up</h2>
-        <form id="signupForm" action="/signup" method="POST">
+        <form id="signupForm">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" placeholder="Enter your name" required>
             <label for="email">Email</label>
@@ -208,10 +183,9 @@
         <p class="forgot-password"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
     </div>
 
-    <!-- Forgot Password Form (Hidden by Default) -->
     <div class="auth-container" id="forgotPasswordContainer" style="display: none;">
         <h2>Forgot Password</h2>
-        <form id="forgotPasswordForm" action="/forgot-password" method="POST">
+        <form id="forgotPasswordForm">
             <label for="forgotEmail">Email</label>
             <input type="email" id="forgotEmail" name="email" placeholder="Enter your email" required>
             <label for="newPassword">New Password</label>
@@ -240,72 +214,88 @@
             authContainer.style.display = "block";
         });
 
-        // Handle Forgot Password Form Submission
-        const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-
-        forgotPasswordForm.addEventListener("submit", async (e) => {
+        // Handle Signup Form Submission
+        document.getElementById("signupForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById("forgotEmail").value;
-            const newPassword = document.getElementById("newPassword").value;
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (!name || !email || !password) {
+                alert("Please fill in all fields.");
+                return;
+            }
 
             try {
-                const response = await fetch("/forgot-password", {
+                const response = await fetch("http://localhost:4000/signup", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, password }),
+                });
+
+                if (!response.ok) {
+                    const text = await response.text();
+                    let errorMessage = "Signup failed.";
+                    try {
+                        const data = JSON.parse(text);
+                        errorMessage = data.message || errorMessage;
+                    } catch {
+                        console.error("Non-JSON response:", text);
+                        errorMessage = "Server error. Please try again.";
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+                alert("Signup successful! Redirecting to login...");
+                window.location.href = "/login"; // Client-side redirect
+            } catch (err) {
+                console.error("Signup error:", err);
+                alert(err.message || "An error occurred during signup. Please try again.");
+            }
+        });
+
+        // Handle Forgot Password Form Submission
+        document.getElementById("forgotPasswordForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("forgotEmail").value.trim();
+            const newPassword = document.getElementById("newPassword").value;
+
+            if (!email || !newPassword) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:4000/forgot-password", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, newPassword }),
                 });
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert("Password reset successfully! Please log in with your new password.");
-                    window.location.href = "/login";
-                } else {
-                    alert(result.error || "Failed to reset password. Please try again.");
+                if (!response.ok) {
+                    const text = await response.text();
+                    let errorMessage = "Failed to reset password.";
+                    try {
+                        const data = JSON.parse(text);
+                        errorMessage = data.message || errorMessage;
+                    } catch {
+                        console.error("Non-JSON response:", text);
+                        errorMessage = "Server error. Please try again.";
+                    }
+                    throw new Error(errorMessage);
                 }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("An error occurred. Please try again.");
+
+                const data = await response.json();
+                alert("Password reset successful! Redirecting to login...");
+                window.location.href = "/login";
+            } catch (err) {
+                console.error("Forgot password error:", err);
+                alert(err.message || "An error occurred. Please try again.");
             }
         });
     </script>
-
-<script>
-document.getElementById("signupForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const response = await fetch("http://localhost:4000/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    // Check if the response is JSON
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      const text = await response.text();
-      throw new Error(`Unexpected response: ${text}`);
-    }
-
-    const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem("token", data.token); // Store JWT
-      window.location.href = "class1-5.htm"; // Redirect to class page
-    } else {
-      alert(data.message || "Signup failed");
-    }
-  } catch (err) {
-    console.error("Error:", err);
-    alert("An error occurred. Please try again.");
-  }
-});
-</script>
 </body>
 </html>

@@ -4,19 +4,22 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const multer = require("multer");
+
+const cors = require("cors");
 const app = express();
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public"))); // For serving static files
-app.use(express.json()); // To parse JSON request bodies
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+app.use(cors({ origin: "*", credentials: true }));
 
 // Database connection
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root",         // Replace with your MySQL username
-  password: "Rajesh@254", // Replace with your MySQL password
-  database: "GuideAspire" // Replace with your database name
+  user: "root",
+  password: "Rajesh@254",
+  database: "GuideAspire",
 });
 
 db.connect((err) => {
@@ -26,6 +29,9 @@ db.connect((err) => {
   }
   console.log("Connected to the MySQL database.");
 });
+
+// JWT Secret
+const JWT_SECRET = "your_jwt_secret";
 
 // Route for the home page
 app.get("/", (req, res) => {
@@ -37,45 +43,45 @@ app.get("/signup", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Signup.htm"));
 });
 
-app.post("/signup", (req, res) => {
-  const { email, password } = req.body;
+// Consolidated Signup Endpoint (ONLY ONE)
+app.post("/signup", async (req, res) => {
+  const { name, email, password } = req.body;
 
-  // Simple validation to check if both fields are provided
-  if (!email || !password) {
-    return res.status(400).send('<script>alert("Both email and password are required."); window.location.href="/signup";</script>');
+  // Validation
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: "Name, email, and password are required." });
   }
 
-  // Check for existing user in the database before inserting
-  const checkQuery = "SELECT * FROM users WHERE email = ?";
-  db.query(checkQuery, [email], (err, results) => {
-    if (err) {
-      console.error("Error querying database:", err);
-      return res.status(500).send('<script>alert("An error occurred while checking email."); window.location.href="/signup";</script>');
-    }
-    if (results.length > 0) {
-      return res.send('<script>alert("Email already exists. Please use a different email."); window.location.href="/signup";</script>');
-    }
-
-    // Hash the password before inserting
-    bcrypt.hash(password, 10, (err, hashedPassword) => {
+  try {
+    // Check if user exists
+    const checkQuery = "SELECT * FROM users WHERE email = ?";
+    db.query(checkQuery, [email], async (err, results) => {
       if (err) {
-        console.error("Error hashing password:", err);
-        return res.status(500).send('<script>alert("An error occurred while hashing password."); window.location.href="/signup";</script>');
+        console.error("Database error (check):", err);
+        return res.status(500).json({ message: "Server error while checking user." });
+      }
+      if (results.length > 0) {
+        return res.status(400).json({ message: "Email already exists." });
       }
 
-      const insertQuery = "INSERT INTO users (email, password) VALUES (?, ?)";
-      db.query(insertQuery, [email, hashedPassword], (err) => {
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Insert user
+      const insertQuery = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+      db.query(insertQuery, [name, email, hashedPassword], (err) => {
         if (err) {
-          console.error("Error inserting user into database:", err);
-          return res.status(500).send('<script>alert("An error occurred while inserting user."); window.location.href="/signup";</script>');
+          console.error("Database error (insert):", err);
+          return res.status(500).json({ message: "Server error while saving user." });
         }
-        else{
-        
-        res.redirect("/login");
-        }
+        console.log("User created:", { name, email });
+        res.status(201).json({ message: "Signup successful!" });
       });
     });
-  });
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.status(500).json({ message: "Internal server error." });
+  }
 });
 
 // Route for the login page
@@ -83,40 +89,63 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "Login.htm"));
 });
 
-app.post("/login", (req, res) => {
+// Login Endpoint (Revised - No JWT)
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate input
+  // Validation
   if (!email || !password) {
-    return res.status(400).send('<script>alert("Both email and password are required."); window.location.href="/login";</script>');
+    return res.status(400).json({ message: "Email and password are required." });
   }
 
-  // Check if the email exists in the database
-  const query = "SELECT * FROM users WHERE email = ?";
-  db.query(query, [email], (err, results) => {
-    if (err) {
-      console.error("Error querying database:", err);
-      return res.status(500).send('<script>alert("An error occurred while querying the database."); window.location.href="/login";</script>');
-    }
+  try {
+    // Check if user exists
+    const query = "SELECT * FROM users WHERE email = ?";
+    db.query(query, [email], async (err, results) => {
+      if (err) {
+        console.error("Database error (login check):", err);
+        return res.status(500).json({ message: "Server error while checking user." });
+      }
+      if (results.length === 0) {
+        return res.status(400).json({ message: "Invalid email or password." });
+      }
 
-    if (results.length > 0) {
-      // Compare the hashed password with the stored one
-      bcrypt.compare(password, results[0].password, (err, match) => {
-        if (err) {
-          console.error("Error comparing passwords:", err);
-          return res.status(500).send('<script>alert("An error occurred while comparing passwords."); window.location.href="/login";</script>');
-        }
+      const user = results[0];
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: "Invalid email or password." });
+      }
 
-        if (match) {
-          // Store the user's email in localStorage (for frontend use)
-          res.send(`<script>localStorage.setItem("userEmail", "${email}"); window.location.href="/course-select";</script>`);
-        } else {
-          return res.send('<script>alert("Invalid email or password."); window.location.href="/login";</script>');
-        }
+      // Return success response without JWT
+      res.status(200).json({
+        message: "Login successful!",
+        user: { name: user.name, email: user.email },
       });
-    } else {
-      return res.send('<script>alert("Invalid email or password."); window.location.href="/login";</script>');
-    }
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// Fetch Profile Endpoint
+app.get("/profile/:email", (req, res) => {
+  const { email } = req.params;
+  const query = "SELECT * FROM profile WHERE email = ?";
+  db.query(query, [email], (err, results) => {
+    if (err) return res.status(500).json({ message: "Server error." });
+    if (results.length === 0) return res.status(404).json({ message: "Profile not found." });
+    res.json(results[0]);
+  });
+});
+
+// Update Profile Endpoint
+app.post("/profile/update", (req, res) => {
+  const { email, age, bio } = req.body;
+  const query = "UPDATE profile SET age = ?, bio = ? WHERE email = ?";
+  db.query(query, [age, bio, email], (err) => {
+    if (err) return res.status(500).json({ message: "Server error updating profile." });
+    res.json({ message: "Profile updated successfully!" });
   });
 });
 
@@ -133,9 +162,11 @@ app.get("/class1-5", (req, res) => {
 app.get("/class6-10", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "class6-10.htm"));
 });
+
 app.get("/summer", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "summer.htm"));
 });
+
 app.get("/class11-12", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "class11-12.htm"));
 });
@@ -145,116 +176,75 @@ app.get("/grad", (req, res) => {
 });
 
 // Endpoint to fetch progress
-app.get('/progress/:email/:classNumber', async (req, res) => {
+app.get("/progress/:email/:classNumber", (req, res) => {
   const { email, classNumber } = req.params;
-
-  // Check if the user exists in the `users` table
   const checkUserQuery = "SELECT * FROM users WHERE email = ?";
   db.query(checkUserQuery, [email], (err, results) => {
-    if (err) {
-      console.error("Error checking user:", err);
-      return res.status(500).json({ error: 'Failed to check user existence' });
-    }
+    if (err) return res.status(500).json({ error: "Database error." });
+    if (results.length === 0) return res.status(400).json({ error: "User does not exist." });
 
-    if (results.length === 0) {
-      return res.status(400).json({ error: 'User does not exist. Please sign up first.' });
-    }
-
-    // If the user exists, fetch progress
-    const fetchProgressQuery = "SELECT day_number FROM user_progress WHERE email = ? AND class_number = ? AND completed = TRUE";
+    const fetchProgressQuery =
+      "SELECT day_number FROM user_progress WHERE email = ? AND class_number = ? AND completed = TRUE";
     db.query(fetchProgressQuery, [email, classNumber], (err, results) => {
-      if (err) {
-        console.error("Error fetching progress:", err);
-        return res.status(500).json({ error: 'Failed to retrieve progress' });
-      }
-      const completedDays = results.map(row => row.day_number); // Extract day numbers
-      res.json(completedDays);
+      if (err) return res.status(500).json({ error: "Failed to retrieve progress." });
+      res.json(results.map((row) => row.day_number));
     });
   });
 });
 
 // Endpoint to save progress
-app.post('/progress', async (req, res) => {
+app.post("/progress", (req, res) => {
   const { email, classNumber, dayNumber } = req.body;
-
-  // Check if the user exists in the `users` table
   const checkUserQuery = "SELECT * FROM users WHERE email = ?";
   db.query(checkUserQuery, [email], (err, results) => {
-    if (err) {
-      console.error("Error checking user:", err);
-      return res.status(500).json({ error: 'Failed to check user existence' });
-    }
+    if (err) return res.status(500).json({ error: "Database error." });
+    if (results.length === 0) return res.status(400).json({ error: "User does not exist." });
 
-    if (results.length === 0) {
-      return res.status(400).json({ error: 'User does not exist. Please sign up first.' });
-    }
-
-    // If the user exists, insert/update progress
     const insertProgressQuery = `
       INSERT INTO user_progress (email, class_number, day_number, completed) 
       VALUES (?, ?, ?, TRUE) 
       ON DUPLICATE KEY UPDATE completed = TRUE
     `;
     db.query(insertProgressQuery, [email, classNumber, dayNumber], (err) => {
-      if (err) {
-        console.error("Error saving progress:", err);
-        return res.status(500).json({ error: 'Failed to save progress' });
-      }
-      res.sendStatus(200); // Success
+      if (err) return res.status(500).json({ error: "Failed to save progress." });
+      res.sendStatus(200);
     });
   });
 });
-
-
-
-
 
 // Forgot Password Route
 app.post("/forgot-password", async (req, res) => {
   const { email, newPassword } = req.body;
 
-  // Check if the user exists in the database
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: "Email and new password are required." });
+  }
+
   const checkUserQuery = "SELECT * FROM users WHERE email = ?";
   db.query(checkUserQuery, [email], async (err, results) => {
-      if (err) {
-          console.error("Error checking user:", err);
-          return res.status(500).json({ error: "Failed to check user existence" });
-      }
+    if (err) return res.status(500).json({ message: "Database error." });
+    if (results.length === 0) return res.status(400).json({ message: "User does not exist." });
 
-      if (results.length === 0) {
-          return res.status(400).json({ error: "User does not exist. Please sign up first." });
-      }
-
-      // Hash the new password
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-      // Update the user's password in the database
-      const updatePasswordQuery = "UPDATE users SET password = ? WHERE email = ?";
-      db.query(updatePasswordQuery, [hashedPassword, email], (err) => {
-          if (err) {
-              console.error("Error updating password:", err);
-              return res.status(500).json({ error: "Failed to update password" });
-          }
-
-          res.json({ success: true });
-      });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updatePasswordQuery = "UPDATE users SET password = ? WHERE email = ?";
+    db.query(updatePasswordQuery, [hashedPassword, email], (err) => {
+      if (err) return res.status(500).json({ message: "Failed to update password." });
+      res.json({ message: "Password reset successful!" });
+    });
   });
 });
 
-
-// API to submit poll feedback
-app.post('/submit-poll', (req, res) => {
+// Poll Feedback Endpoints
+app.post("/submit-poll", (req, res) => {
   const { voteType, reason } = req.body;
-
-  const query = 'INSERT INTO poll_feedback (vote_type, reason) VALUES (?, ?)';
-  db.query(query, [voteType, reason], (err, result) => {
-    if (err) throw err;
-    res.send({ message: 'Feedback submitted successfully!' });
+  const query = "INSERT INTO poll_feedback (vote_type, reason) VALUES (?, ?)";
+  db.query(query, [voteType, reason], (err) => {
+    if (err) return res.status(500).json({ error: "Failed to submit feedback." });
+    res.json({ message: "Feedback submitted successfully!" });
   });
 });
 
-// API to fetch poll counts
-app.get('/poll-counts', (req, res) => {
+app.get("/poll-counts", (req, res) => {
   const query = `
     SELECT 
       SUM(CASE WHEN vote_type = 'like' THEN 1 ELSE 0 END) AS likeCount,
@@ -262,132 +252,17 @@ app.get('/poll-counts', (req, res) => {
     FROM poll_feedback
   `;
   db.query(query, (err, result) => {
-    if (err) throw err;
-    res.send(result[0]);
+    if (err) return res.status(500).json({ error: "Failed to fetch poll counts." });
+    res.json(result[0]);
   });
 });
-
 
 // Multer setup for file uploads
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
-
 const upload = multer({ storage });
-
-// JWT secret
-const JWT_SECRET = "your_jwt_secret";
-
-// Middleware to verify JWT
-const authenticateUser = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) return res.status(401).json({ message: "Access denied" });
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.status(400).json({ message: "Invalid token" });
-  }
-};
-
-// Signup endpoint
-app.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  // Hash password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Insert user into database
-  const query = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-  db.query(query, [name, email, hashedPassword], (err, result) => {
-    if (err) return res.status(400).json({ message: "Email already exists" });
-
-    // Generate JWT
-    const token = jwt.sign({ id: result.insertId, email }, JWT_SECRET);
-    res.status(201).json({ token });
-  });
-});
-
-// Login endpoint
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  // Find user by email
-  const query = "SELECT * FROM users WHERE email = ?";
-  db.query(query, [email], async (err, results) => {
-    if (err || results.length === 0)
-      return res.status(400).json({ message: "Invalid email or password" });
-
-    const user = results[0];
-
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid email or password" });
-
-    // Generate JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email, profile_photo: user.profile_photo } });
-  });
-});
-
-
-
-
-
-// Signup endpoint
-// Signup endpoint
-app.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert user into database
-    const query = "INSERT INTO users_profile (name, email, password) VALUES (?, ?, ?)";
-    db.query(query, [name, email, hashedPassword], (err, result) => {
-      if (err) {
-        console.error("Database error:", err);
-        return res.status(400).json({ message: "Email already exists" });
-      }
-
-      // Generate JWT
-      const token = jwt.sign({ id: result.insertId, email }, JWT_SECRET);
-      res.status(201).json({ token });
-    });
-  } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-// Fetch user profile
-app.get("/profile", (req, res) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-  if (!token) return res.status(401).json({ message: "Access denied" });
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    const query = "SELECT name, email, profile_photo FROM users_profile WHERE id = ?";
-    db.query(query, [decoded.id], (err, results) => {
-      if (err || results.length === 0)
-        return res.status(404).json({ message: "User not found" });
-
-      res.json(results[0]);
-    });
-  } catch (err) {
-    res.status(400).json({ message: "Invalid token" });
-  }
-});
-
-// Serve uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Start the server

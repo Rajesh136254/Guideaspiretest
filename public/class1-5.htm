@@ -1191,43 +1191,6 @@ document.addEventListener("mozfullscreenchange", handleFullscreenChange); // For
 document.addEventListener("MSFullscreenChange", handleFullscreenChange); // For IE/Edge
 
     </script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("Please login first");
-    window.location.href = "/login.html"; // Redirect to login page
-    return;
-  }
-
-  try {
-    // Fetch user profile
-    const response = await fetch("http://localhost:4000/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    // Check if the response is JSON
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      const text = await response.text();
-      throw new Error(`Unexpected response: ${text}`);
-    }
-
-    const profile = await response.json();
-    if (response.ok) {
-      document.getElementById("userName").textContent = profile.name;
-      if (profile.profile_photo) {
-        document.getElementById("profileIcon").src = profile.profile_photo;
-      }
-    } else {
-      alert("Failed to fetch profile");
-    }
-  } catch (err) {
-    console.error("Error:", err);
-    alert("An error occurred. Please try again.");
-  }
-});
-</script>
   
   </body>
 </html>
