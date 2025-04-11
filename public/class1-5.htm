@@ -725,25 +725,28 @@
     <script src="data.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const daysContainer = document.getElementById("days-scroll");
-        const videoFrame = document.getElementById("video-frame");
-        const topicName = document.getElementById("topic-name");
-        const exerciseLink = document.getElementById("exercise-link");
-        const projectLink = document.getElementById("project-link");
-        const completeBtn = document.getElementById("complete-btn");
-        const languageSelect = document.getElementById("language-select");
-        const classItems = document.querySelectorAll(".class-item");
-        const userEmail = localStorage.getItem("userEmail"); // Ensure this is set during login
+  const daysContainer = document.getElementById("days-scroll");
+  const videoFrame = document.getElementById("video-frame");
+  const topicName = document.getElementById("topic-name");
+  const exerciseLink = document.getElementById("exercise-link");
+  const projectLink = document.getElementById("project-link");
+  const completeBtn = document.getElementById("complete-btn");
+  const languageSelect = document.getElementById("language-select");
+  const classItems = document.querySelectorAll(".class-item");
 
-        if (!userEmail) {
-          alert("Please log in to track your progress.");
-          window.location.href = "/login";
-          return;
-        }
+  // Retrieve and validate userEmail
+  const userEmail = localStorage.getItem("userEmail");
 
-        let selectedClass = 1;
-        let selectedDay = 1;
-        let progress = {};
+  if (!userEmail || userEmail.trim() === "") {
+    console.error("No valid user email found in localStorage.");
+    alert("Please log in to track your progress.");
+    window.location.href = "/login";
+    return;
+  }
+
+  let selectedClass = 1;
+  let selectedDay = 1;
+  let progress = {};
 
         const topics = {
           1: [
@@ -833,78 +836,69 @@
           5: ["https://project1.com", "https://project2.com"],
         };
 
-        // Fetch progress from the database
-        async function fetchProgress() {
-          try {
-            const response = await fetch(
-              `/progress/${userEmail}/${selectedClass}`
-            );
-            const completedDays = await response.json();
-            progress[selectedClass] =
-              completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1;
-            updateDays();
-          } catch (error) {
-            console.error("Error fetching progress:", error);
-          }
-        }
 
-        let currentRangeStart = 1; // Track the start of the current range (e.g., 1, 11, 21, etc.)
+// Ensure fetchProgress uses the correct email
+async function fetchProgress() {
+    try {
+      const response = await fetch(`/progress/${encodeURIComponent(userEmail)}/${selectedClass}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const completedDays = await response.json();
+      progress[selectedClass] = Array.isArray(completedDays) ? completedDays : [];
+      updateDays();
+    } catch (error) {
+      console.error("Error fetching progress:", error);
+      progress[selectedClass] = [];
+      updateDays();
+    }
+  }
 
-        function updateDays() {
-          const daysContainer = document.getElementById("days-scroll");
-          const sectionHeader = document.querySelector(".section-header");
-          const subSectionHeader = document.querySelector(
-            ".sub-section-header"
-          );
-          let currentProgress = progress[selectedClass] || 1; // Ensure day 1 is always unlocked
+    let currentRangeStart = 1;
 
-          // Clear existing days
-          daysContainer.innerHTML = "";
+function updateDays() {
+  const daysContainer = document.getElementById("days-scroll");
+  const sectionHeader = document.querySelector(".section-header");
+  const subSectionHeader = document.querySelector(".sub-section-header");
+  const completedDays = progress[selectedClass] || [];
+  const currentProgress = completedDays.length > 0 ? Math.max(...completedDays) + 1 : 1; // Next unlockable day
 
-          // Determine the current range (e.g., 1-10, 11-20)
-          const rangeStart = currentRangeStart;
-          const rangeEnd = Math.min(rangeStart + 9, 50); // Ensure it doesn't exceed 50 days
+  daysContainer.innerHTML = "";
 
-          // Update Section Header
-          sectionHeader.textContent = `Day ${rangeStart}-${rangeEnd}: ${getSectionTitle(
-            rangeStart
-          )}`;
+  const rangeStart = currentRangeStart;
+  const rangeEnd = Math.min(rangeStart + 9, 50);
 
-          // Update Sub-Section Header
-          const subRangeStart = Math.floor((selectedDay - 1) / 2) * 2 + 1;
-          const subRangeEnd = Math.min(subRangeStart + 1, rangeEnd); // Ensure it doesn't exceed the range
-          subSectionHeader.textContent = `• Day ${subRangeStart}-${subRangeEnd}: ${getSubSectionTitle(
-            subRangeStart
-          )}`;
+  sectionHeader.textContent = `Day ${rangeStart}-${rangeEnd}: ${getSectionTitle(rangeStart)}`;
+  const subRangeStart = Math.floor((selectedDay - 1) / 2) * 2 + 1;
+  const subRangeEnd = Math.min(subRangeStart + 1, rangeEnd);
+  subSectionHeader.textContent = `• Day ${subRangeStart}-${subRangeEnd}: ${getSubSectionTitle(subRangeStart)}`;
 
-          // Add days for the current range
-          for (let i = rangeStart; i <= rangeEnd; i++) {
-            const day = document.createElement("div");
-            day.classList.add("day-item");
-            day.textContent = `Day ${i}`;
+  for (let i = rangeStart; i <= rangeEnd; i++) {
+    const day = document.createElement("div");
+    day.classList.add("day-item");
+    day.textContent = `Day ${i}`;
 
-            if (i < currentProgress) {
-              day.classList.add("completed");
-            } else if (i === currentProgress) {
-              day.classList.add("unlocked");
-            } else {
-              day.classList.add("locked");
-            }
+    if (completedDays.includes(i)) {
+      day.classList.add("completed");
+    } else if (i <= currentProgress) {
+      day.classList.add("unlocked");
+    } else {
+      day.classList.add("locked");
+    }
 
-            day.addEventListener("click", () => {
-              if (!day.classList.contains("locked")) {
-                selectedDay = i;
-                loadDay(i);
-                updateDays(); // Refresh headers and days
-              }
-            });
+    day.addEventListener("click", () => {
+      if (!day.classList.contains("locked")) {
+        selectedDay = i;
+        loadDay(i);
+        updateDays();
+      }
+    });
 
-            daysContainer.appendChild(day);
-          }
+    daysContainer.appendChild(day);
+  }
 
-          // Add navigation buttons
-          addNavigationButtons();
-        }
+  addNavigationButtons();
+}
 
         // Helper function to add navigation buttons
         function addNavigationButtons() {
@@ -1112,46 +1106,53 @@ projectLink.href = `project.html?class=${selectedClass}&day=${selectedDay}`;
           return `${baseURL}${videoID}`;
         }
 
-        completeBtn.addEventListener("click", async function () {
-          if (
-            !progress[selectedClass] ||
-            progress[selectedClass] < selectedDay + 1
-          ) {
-            progress[selectedClass] = selectedDay + 1;
-            try {
-              await fetch("/progress", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  email: userEmail,
-                  classNumber: selectedClass,
-                  dayNumber: selectedDay,
-                }),
-              });
-              updateDays();
-            } catch (error) {
-              console.error("Error saving progress:", error);
-            }
-          }
+// Ensure completeBtn sends the correct email
+completeBtn.addEventListener("click", async function () {
+    const completedDays = progress[selectedClass] || [];
+    if (!completedDays.includes(selectedDay)) {
+      try {
+        const response = await fetch("/progress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: userEmail,
+            classNumber: selectedClass,
+            dayNumber: selectedDay,
+          }),
         });
 
-        classItems.forEach((item) => {
-          item.addEventListener("click", function () {
-            selectedClass = parseInt(this.getAttribute("data-class"));
-            selectedDay = 1; // Reset selected day to 1
-            currentRangeStart = 1; // Reset the range start to 1
-            fetchProgress();
-            loadDay(1);
-          });
-        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to save progress");
+        }
 
-        languageSelect.addEventListener("change", function () {
-          loadDay(selectedDay);
-        });
+        completedDays.push(selectedDay);
+        progress[selectedClass] = completedDays;
+        updateDays();
+      } catch (error) {
+        console.error("Error saving progress:", error);
+        alert("Failed to save progress. Please try again.");
+      }
+    }
+  });
 
-        fetchProgress();
-        loadDay(1);
-      });
+  classItems.forEach((item) => {
+    item.addEventListener("click", function () {
+      selectedClass = parseInt(this.getAttribute("data-class"));
+      selectedDay = 1;
+      currentRangeStart = 1;
+      fetchProgress();
+      loadDay(1);
+    });
+  });
+
+  languageSelect.addEventListener("change", function () {
+    loadDay(selectedDay);
+  });
+
+  fetchProgress();
+  loadDay(1);
+});
 
       // code for stylings change of side class list
       document.querySelectorAll(".class-item").forEach((item) => {

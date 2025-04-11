@@ -90,37 +90,44 @@ app.get("/login", (req, res) => {
 });
 
 // Login Endpoint (Revised - No JWT)
+// Login Endpoint
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   // Validation
-  if (!email || !password) {
+  if (!email || !password || email.trim() === "" || password.trim() === "") {
+    console.error("Invalid login input:", { email, password });
     return res.status(400).json({ message: "Email and password are required." });
+  }
+
+  // Basic email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    console.error("Invalid email format:", email);
+    return res.status(400).json({ message: "Invalid email format." });
   }
 
   try {
     // Check if user exists
     const query = "SELECT * FROM users WHERE email = ?";
-    db.query(query, [email], async (err, results) => {
-      if (err) {
-        console.error("Database error (login check):", err);
-        return res.status(500).json({ message: "Server error while checking user." });
-      }
-      if (results.length === 0) {
-        return res.status(400).json({ message: "Invalid email or password." });
-      }
+    const [results] = await db.promise().query(query, [email]);
 
-      const user = results[0];
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(400).json({ message: "Invalid email or password." });
-      }
+    if (results.length === 0) {
+      console.error("User not found:", email);
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
 
-      // Return success response without JWT
-      res.status(200).json({
-        message: "Login successful!",
-        user: { name: user.name, email: user.email },
-      });
+    const user = results[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.error("Password mismatch for email:", email);
+      return res.status(400).json({ message: "Invalid email or password." });
+    }
+
+    console.log("User logged in successfully:", email);
+    res.status(200).json({
+      message: "Login successful!",
+      user: { name: user.name, email: user.email },
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -175,42 +182,132 @@ app.get("/grad", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "grad.htm"));
 });
 
-// Endpoint to fetch progress
-app.get("/progress/:email/:classNumber", (req, res) => {
-  const { email, classNumber } = req.params;
-  const checkUserQuery = "SELECT * FROM users WHERE email = ?";
-  db.query(checkUserQuery, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error." });
-    if (results.length === 0) return res.status(400).json({ error: "User does not exist." });
+// Updated progress endpoints in app.js
 
-    const fetchProgressQuery =
-      "SELECT day_number FROM user_progress WHERE email = ? AND class_number = ? AND completed = TRUE";
-    db.query(fetchProgressQuery, [email, classNumber], (err, results) => {
-      if (err) return res.status(500).json({ error: "Failed to retrieve progress." });
-      res.json(results.map((row) => row.day_number));
-    });
-  });
-});
-
-// Endpoint to save progress
-app.post("/progress", (req, res) => {
+// Save progress endpoint
+app.post("/progress", async (req, res) => {
   const { email, classNumber, dayNumber } = req.body;
-  const checkUserQuery = "SELECT * FROM users WHERE email = ?";
-  db.query(checkUserQuery, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: "Database error." });
-    if (results.length === 0) return res.status(400).json({ error: "User does not exist." });
+  console.log("Received progress data:", { email, classNumber, dayNumber });
 
-    const insertProgressQuery = `
-      INSERT INTO user_progress (email, class_number, day_number, completed) 
-      VALUES (?, ?, ?, TRUE) 
-      ON DUPLICATE KEY UPDATE completed = TRUE
+  // Validate inputs
+  if (!email || email.trim() === "" || !classNumber || !dayNumber) {
+    console.error("Invalid input:", { email, classNumber, dayNumber });
+    return res.status(400).json({ error: "Valid email, classNumber, and dayNumber are required." });
+  }
+
+  // Basic email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    console.error("Invalid email format:", email);
+    return res.status(400).json({ error: "Invalid email format." });
+  }
+
+  try {
+    // Check if user exists
+    const checkUserQuery = "SELECT * FROM users WHERE email = ?";
+    const [userResults] = await db.promise().query(checkUserQuery, [email]);
+
+    if (userResults.length === 0) {
+      console.error("User does not exist:", email);
+      return res.status(400).json({ error: "User does not exist." });
+    }
+
+    // Get current progress
+    const getProgressQuery = "SELECT completed_days FROM user_progress WHERE email = ? AND class_number = ?";
+    const [progressResults] = await db.promise().query(getProgressQuery, [email, classNumber]);
+
+    let completedDays = [];
+    if (progressResults.length > 0 && progressResults[0].completed_days) {
+      try {
+        completedDays = JSON.parse(progressResults[0].completed_days);
+        if (!Array.isArray(completedDays)) {
+          completedDays = [];
+        }
+      } catch (parseError) {
+        console.error("Error parsing completed_days for email:", email, parseError);
+        completedDays = [];
+      }
+    }
+
+    // Add the new day if not already present
+    if (!completedDays.includes(dayNumber)) {
+      completedDays.push(dayNumber);
+      completedDays.sort((a, b) => a - b);
+    }
+
+    // Update or insert progress
+    const updateProgressQuery = `
+      INSERT INTO user_progress (email, class_number, completed_days) 
+      VALUES (?, ?, ?) 
+      ON DUPLICATE KEY UPDATE completed_days = ?
     `;
-    db.query(insertProgressQuery, [email, classNumber, dayNumber], (err) => {
-      if (err) return res.status(500).json({ error: "Failed to save progress." });
-      res.sendStatus(200);
-    });
-  });
+    const completedDaysStr = JSON.stringify(completedDays);
+    await db.promise().query(updateProgressQuery, [email, classNumber, completedDaysStr, completedDaysStr]);
+
+    console.log("Progress saved successfully:", { email, classNumber, completedDays });
+    res.sendStatus(200);
+  } catch (err) {
+    console.error("Error saving progress for email:", email, err);
+    res.status(500).json({ error: "Failed to save progress.", details: err.message });
+  }
 });
+
+// Get progress endpoint
+app.get("/progress/:email/:classNumber", async (req, res) => {
+  const { email, classNumber } = req.params;
+  console.log("Fetching progress for:", { email, classNumber });
+
+  // Validate inputs
+  if (!email || email.trim() === "") {
+    console.error("Invalid email:", email);
+    return res.status(400).json({ error: "Valid email is required." });
+  }
+
+  // Basic email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    console.error("Invalid email format:", email);
+    return res.status(400).json({ error: "Invalid email format." });
+  }
+
+  try {
+    // Check if user exists
+    const checkUserQuery = "SELECT * FROM users WHERE email = ?";
+    const [userResults] = await db.promise().query(checkUserQuery, [email]);
+
+    if (userResults.length === 0) {
+      console.error("User does not exist:", email);
+      return res.status(400).json({ error: "User does not exist." });
+    }
+
+    // Get progress
+    const getProgressQuery = "SELECT completed_days FROM user_progress WHERE email = ? AND class_number = ?";
+    const [progressResults] = await db.promise().query(getProgressQuery, [email, classNumber]);
+
+    if (progressResults.length === 0 || !progressResults[0].completed_days) {
+      console.log("No progress found for:", { email, classNumber });
+      return res.json([]);
+    }
+
+    let completedDays;
+    try {
+      completedDays = JSON.parse(progressResults[0].completed_days);
+      if (!Array.isArray(completedDays)) {
+        completedDays = [];
+      }
+    } catch (parseError) {
+      console.error("Error parsing completed_days for email:", email, parseError);
+      completedDays = [];
+    }
+
+    console.log("Progress retrieved:", { email, classNumber, completedDays });
+    res.json(completedDays);
+  } catch (err) {
+    console.error("Error fetching progress for email:", email, err);
+    res.status(500).json({ error: "Failed to retrieve progress." });
+  }
+});
+
 
 // Forgot Password Route
 app.post("/forgot-password", async (req, res) => {
